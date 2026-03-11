@@ -1,13 +1,1288 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
 
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>أكاديمية MAX — تعلّم البرمجة والذكاء الاصطناعي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #17171f;
+    --border: #2a2a38;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
+    --accent3: #ff6b6b;
+    --text: #e8e8f0;
+    --text-dim: #7a7a9a;
+    --text-muted: #4a4a6a;
+    --glow: rgba(108,99,255,0.15);
+  }
+
+- { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+font-family: ‘IBM Plex Sans Arabic’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(–bg); }
+::-webkit-scrollbar-thumb { background: var(–border); border-radius: 3px; }
+
+/* ─── NOISE OVERLAY ─── */
+body::before {
+content: ‘’;
+position: fixed; inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.03’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 9999;
+opacity: 0.4;
+}
+
+/* ─── HEADER ─── */
+header {
+position: sticky; top: 0; z-index: 100;
+height: 60px;
+background: rgba(10,10,15,0.85);
+backdrop-filter: blur(20px);
+border-bottom: 1px solid var(–border);
+display: flex; align-items: center;
+padding: 0 2rem;
+gap: 2rem;
+}
+
+.logo {
+display: flex; align-items: center; gap: 0.75rem;
+text-decoration: none;
+cursor: pointer;
+}
+.logo-mark {
+width: 32px; height: 32px;
+background: linear-gradient(135deg, var(–accent), var(–accent2));
+border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 12px;
+font-weight: 600;
+color: white;
+letter-spacing: -0.5px;
+}
+.logo-text {
+font-size: 1rem;
+font-weight: 700;
+color: var(–text);
+letter-spacing: -0.3px;
+}
+
+nav {
+display: flex; gap: 0.25rem;
+margin-right: 1.5rem;
+}
+nav button {
+background: none; border: none; cursor: pointer;
+padding: 0.4rem 0.85rem;
+border-radius: 8px;
+font-size: 0.85rem;
+font-weight: 500;
+font-family: inherit;
+color: var(–text-dim);
+transition: all 0.2s;
+}
+nav button:hover { background: var(–surface2); color: var(–text); }
+nav button.active { background: var(–surface2); color: var(–text); }
+
+.header-search {
+flex: 1; max-width: 360px;
+margin-right: auto;
+position: relative;
+}
+.header-search input {
+width: 100%;
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 10px;
+padding: 0.45rem 2.5rem 0.45rem 1rem;
+color: var(–text);
+font-family: inherit;
+font-size: 0.85rem;
+outline: none;
+transition: border-color 0.2s;
+}
+.header-search input:focus { border-color: var(–accent); }
+.header-search input::placeholder { color: var(–text-muted); }
+.search-icon {
+position: absolute; right: 0.75rem; top: 50%;
+transform: translateY(-50%);
+color: var(–text-muted);
+font-size: 0.9rem;
+}
+.search-dropdown {
+position: absolute; top: calc(100% + 8px); right: 0; left: 0;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 12px;
+overflow: hidden;
+box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+z-index: 200;
+display: none;
+}
+.search-dropdown.visible { display: block; }
+.search-item {
+padding: 0.75rem 1rem;
+cursor: pointer;
+border-bottom: 1px solid var(–border);
+transition: background 0.15s;
+}
+.search-item:last-child { border-bottom: none; }
+.search-item:hover { background: var(–surface2); }
+.search-item-title { font-size: 0.875rem; font-weight: 500; }
+.search-item-type { font-size: 0.7rem; color: var(–accent2); text-transform: uppercase; margin-top: 2px; letter-spacing: 0.5px; }
+
+.admin-btn {
+background: none;
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 0.35rem 0.85rem;
+color: var(–text-dim);
+font-size: 0.78rem;
+font-family: inherit;
+cursor: pointer;
+transition: all 0.2s;
+}
+.admin-btn:hover { border-color: var(–accent); color: var(–accent); }
+
+/* ─── LAYOUT ─── */
+.app-body {
+display: flex;
+min-height: calc(100vh - 60px);
+}
+
+/* ─── SIDEBAR ─── */
+aside {
+width: 260px;
+min-width: 260px;
+border-left: 1px solid var(–border);
+background: var(–surface);
+height: calc(100vh - 60px);
+position: sticky;
+top: 60px;
+overflow-y: auto;
+padding: 1.25rem 0;
+}
+
+.sidebar-section { margin-bottom: 1.5rem; }
+.sidebar-series-btn {
+width: 100%;
+background: none; border: none; cursor: pointer;
+display: flex; align-items: center; gap: 0.75rem;
+padding: 0.6rem 1.25rem;
+font-family: inherit;
+font-size: 0.82rem;
+font-weight: 600;
+color: var(–text-dim);
+text-align: right;
+transition: all 0.2s;
+}
+.sidebar-series-btn:hover { color: var(–text); background: var(–surface2); }
+.sidebar-series-icon {
+width: 28px; height: 28px; border-radius: 7px;
+background: var(–surface2);
+display: flex; align-items: center; justify-content: center;
+font-size: 0.75rem;
+flex-shrink: 0;
+transition: background 0.2s;
+}
+.sidebar-series-btn:hover .sidebar-series-icon { background: var(–border); }
+.sidebar-lessons {
+border-right: 2px solid var(–border);
+margin-right: 1.8rem;
+padding-right: 0.75rem;
+margin-bottom: 0.5rem;
+display: none;
+}
+.sidebar-lessons.open { display: block; }
+.sidebar-lesson-link {
+display: flex; align-items: center; gap: 0.5rem;
+padding: 0.45rem 0.5rem;
+border-radius: 7px;
+font-size: 0.8rem;
+color: var(–text-muted);
+cursor: pointer;
+transition: all 0.15s;
+text-decoration: none;
+}
+.sidebar-lesson-link:hover { color: var(–text); background: var(–surface2); }
+.sidebar-lesson-link.active { background: var(–accent); color: white; }
+.sidebar-lesson-link.active .play-dot { background: white; }
+.play-dot {
+width: 6px; height: 6px; border-radius: 50%;
+background: var(–text-muted);
+flex-shrink: 0;
+transition: background 0.15s;
+}
+
+/* ─── MAIN ─── */
+main {
+flex: 1;
+min-width: 0;
+overflow: hidden;
+}
+
+/* ─── PAGES ─── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── HOME PAGE ── */
+.home-hero {
+position: relative;
+margin: 2rem 2rem 0;
+border-radius: 20px;
+overflow: hidden;
+aspect-ratio: 21/8;
+border: 1px solid var(–border);
+}
+.hero-img {
+width: 100%; height: 100%;
+object-fit: cover;
+transition: transform 0.7s ease;
+filter: brightness(0.65) saturate(0.8);
+}
+.home-hero:hover .hero-img { transform: scale(1.03); }
+.hero-overlay {
+position: absolute; inset: 0;
+background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0.4) 50%, transparent 100%);
+display: flex; flex-direction: column; justify-content: flex-end;
+padding: 2.5rem;
+}
+.hero-eyebrow {
+font-size: 0.7rem;
+font-weight: 600;
+color: var(–accent2);
+letter-spacing: 2px;
+text-transform: uppercase;
+margin-bottom: 0.75rem;
+font-family: ‘JetBrains Mono’, monospace;
+}
+.hero-title {
+font-size: clamp(2rem, 4vw, 3.5rem);
+font-weight: 700;
+line-height: 1.15;
+margin-bottom: 0.75rem;
+letter-spacing: -0.5px;
+}
+.hero-sub {
+font-size: 1rem;
+color: rgba(232,232,240,0.7);
+max-width: 520px;
+line-height: 1.6;
+margin-bottom: 1.75rem;
+}
+.hero-cta {
+display: inline-flex; align-items: center; gap: 0.6rem;
+background: var(–accent);
+color: white;
+border: none;
+border-radius: 12px;
+padding: 0.75rem 1.75rem;
+font-size: 0.925rem;
+font-weight: 600;
+font-family: inherit;
+cursor: pointer;
+transition: all 0.2s;
+text-decoration: none;
+}
+.hero-cta:hover { background: #7d75ff; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(108,99,255,0.35); }
+
+.stats-row {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1rem;
+margin: 1.5rem 2rem;
+}
+.stat-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 1.5rem;
+display: flex; flex-direction: column;
+position: relative;
+overflow: hidden;
+transition: border-color 0.2s, transform 0.2s;
+}
+.stat-card::before {
+content: ‘’;
+position: absolute; top: 0; right: 0;
+width: 80px; height: 80px;
+border-radius: 50%;
+filter: blur(30px);
+opacity: 0.15;
+}
+.stat-card:nth-child(1)::before { background: var(–accent); }
+.stat-card:nth-child(2)::before { background: var(–accent2); }
+.stat-card:nth-child(3)::before { background: var(–accent3); }
+.stat-card:hover { border-color: var(–accent); transform: translateY(-2px); }
+.stat-icon {
+font-size: 1.25rem; margin-bottom: 1rem;
+}
+.stat-num {
+font-size: 2rem; font-weight: 700;
+letter-spacing: -1px;
+line-height: 1;
+margin-bottom: 0.3rem;
+}
+.stat-card:nth-child(1) .stat-num { color: var(–accent); }
+.stat-card:nth-child(2) .stat-num { color: var(–accent2); }
+.stat-card:nth-child(3) .stat-num { color: var(–accent3); }
+.stat-label { font-size: 0.8rem; color: var(–text-dim); font-weight: 500; }
+
+.section-header {
+display: flex; align-items: center; gap: 0.75rem;
+padding: 0 2rem;
+margin-bottom: 1.25rem;
+}
+.section-bar {
+width: 3px; height: 22px;
+background: linear-gradient(to bottom, var(–accent), var(–accent2));
+border-radius: 2px;
+}
+.section-title {
+font-size: 1.1rem;
+font-weight: 700;
+letter-spacing: -0.3px;
+}
+
+.lessons-grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 1rem;
+padding: 0 2rem 2rem;
+}
+.lesson-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 16px;
+overflow: hidden;
+cursor: pointer;
+transition: all 0.25s;
+display: flex; flex-direction: column;
+}
+.lesson-card:hover { border-color: var(–accent); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+.lesson-thumb {
+aspect-ratio: 16/9;
+position: relative;
+background: var(–surface2);
+overflow: hidden;
+}
+.lesson-thumb img {
+width: 100%; height: 100%;
+object-fit: cover;
+transition: transform 0.4s;
+filter: saturate(0.7);
+}
+.lesson-card:hover .lesson-thumb img { transform: scale(1.05); filter: saturate(1); }
+.lesson-thumb-overlay {
+position: absolute; inset: 0;
+background: rgba(10,10,15,0.35);
+display: flex; align-items: center; justify-content: center;
+opacity: 0;
+transition: opacity 0.25s;
+}
+.lesson-card:hover .lesson-thumb-overlay { opacity: 1; }
+.play-btn-big {
+width: 48px; height: 48px; border-radius: 50%;
+background: rgba(255,255,255,0.9);
+display: flex; align-items: center; justify-content: center;
+font-size: 1.1rem;
+}
+.lesson-body { padding: 1.1rem; flex: 1; }
+.lesson-series-tag {
+font-size: 0.67rem;
+font-weight: 700;
+color: var(–accent2);
+letter-spacing: 1px;
+text-transform: uppercase;
+margin-bottom: 0.5rem;
+}
+.lesson-title {
+font-size: 0.95rem;
+font-weight: 600;
+line-height: 1.4;
+margin-bottom: 0.85rem;
+}
+.lesson-footer {
+display: flex; align-items: center; justify-content: space-between;
+}
+.lesson-meta { font-size: 0.75rem; color: var(–text-muted); display: flex; align-items: center; gap: 0.4rem; }
+.arrow-btn {
+width: 32px; height: 32px; border-radius: 9px;
+background: var(–surface2);
+border: 1px solid var(–border);
+display: flex; align-items: center; justify-content: center;
+color: var(–text-dim);
+font-size: 0.85rem;
+transition: all 0.2s;
+}
+.lesson-card:hover .arrow-btn { background: var(–accent); border-color: var(–accent); color: white; }
+
+/* ── COURSES PAGE ── */
+.courses-header {
+padding: 2.5rem 2rem 1.5rem;
+border-bottom: 1px solid var(–border);
+}
+.courses-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+.courses-header p { color: var(–text-dim); font-size: 0.9rem; max-width: 500px; line-height: 1.6; }
+
+.courses-list { padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.course-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 18px;
+overflow: hidden;
+transition: border-color 0.2s;
+}
+.course-card:hover { border-color: var(–border); }
+.course-head {
+padding: 1.5rem;
+border-bottom: 1px solid var(–border);
+background: var(–surface2);
+display: flex; align-items: center; gap: 1rem;
+}
+.course-icon {
+width: 52px; height: 52px; border-radius: 14px;
+background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(0,212,170,0.2));
+border: 1px solid var(–border);
+display: flex; align-items: center; justify-content: center;
+font-size: 1.3rem;
+flex-shrink: 0;
+}
+.course-meta h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; }
+.course-meta p { font-size: 0.82rem; color: var(–text-dim); line-height: 1.5; }
+.course-badge {
+margin-right: auto;
+background: rgba(108,99,255,0.1);
+border: 1px solid rgba(108,99,255,0.25);
+color: var(–accent);
+font-size: 0.72rem;
+font-weight: 600;
+padding: 0.3rem 0.7rem;
+border-radius: 20px;
+font-family: ‘JetBrains Mono’, monospace;
+}
+
+.course-lessons { padding: 1rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+.course-lesson-item {
+display: flex; align-items: center; gap: 0.75rem;
+padding: 0.7rem 0.85rem;
+border-radius: 10px;
+border: 1px solid var(–border);
+cursor: pointer;
+transition: all 0.15s;
+}
+.course-lesson-item:hover { background: var(–surface2); border-color: var(–accent); }
+.lesson-num {
+width: 26px; height: 26px; border-radius: 7px;
+background: var(–surface2);
+display: flex; align-items: center; justify-content: center;
+font-size: 0.72rem;
+font-weight: 700;
+color: var(–text-muted);
+flex-shrink: 0;
+font-family: ‘JetBrains Mono’, monospace;
+transition: all 0.15s;
+}
+.course-lesson-item:hover .lesson-num { background: var(–accent); color: white; }
+.course-lesson-title { font-size: 0.82rem; font-weight: 500; flex: 1; }
+.play-icon { color: var(–text-muted); font-size: 0.8rem; transition: color 0.15s; }
+.course-lesson-item:hover .play-icon { color: var(–accent); }
+
+/* ── LESSON PAGE ── */
+.lesson-page { display: flex; flex-direction: column; height: calc(100vh - 60px); }
+.lesson-top-bar {
+padding: 1.25rem 2rem;
+border-bottom: 1px solid var(–border);
+display: flex; align-items: center; gap: 1rem;
+background: var(–surface);
+}
+.back-btn {
+display: flex; align-items: center; gap: 0.5rem;
+background: none; border: none; cursor: pointer;
+font-family: inherit; font-size: 0.82rem;
+color: var(–text-dim);
+transition: color 0.15s;
+padding: 0.3rem 0.5rem;
+border-radius: 7px;
+}
+.back-btn:hover { color: var(–text); background: var(–surface2); }
+.lesson-breadcrumb {
+display: flex; align-items: center; gap: 0.5rem;
+font-size: 0.82rem;
+}
+.breadcrumb-series { color: var(–text-muted); }
+.breadcrumb-sep { color: var(–text-muted); }
+.breadcrumb-title { color: var(–text); font-weight: 500; }
+.complete-btn {
+margin-right: auto;
+display: flex; align-items: center; gap: 0.5rem;
+background: rgba(0,212,170,0.1);
+border: 1px solid rgba(0,212,170,0.25);
+color: var(–accent2);
+padding: 0.4rem 1rem;
+border-radius: 9px;
+font-family: inherit;
+font-size: 0.8rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s;
+}
+.complete-btn:hover { background: rgba(0,212,170,0.2); }
+.complete-btn.done { background: rgba(0,212,170,0.15); color: var(–accent2); }
+
+.lesson-content-area {
+flex: 1;
+overflow-y: auto;
+padding: 2rem;
+}
+.lesson-video {
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 16px;
+overflow: hidden;
+aspect-ratio: 16/9;
+margin-bottom: 2rem;
+display: flex; align-items: center; justify-content: center;
+position: relative;
+}
+.lesson-video img {
+width: 100%; height: 100%;
+object-fit: cover;
+filter: brightness(0.5) saturate(0.5);
+}
+.video-play-overlay {
+position: absolute; inset: 0;
+display: flex; flex-direction: column;
+align-items: center; justify-content: center; gap: 1rem;
+}
+.video-play-circle {
+width: 72px; height: 72px; border-radius: 50%;
+background: rgba(108,99,255,0.9);
+display: flex; align-items: center; justify-content: center;
+font-size: 1.5rem;
+cursor: pointer;
+transition: all 0.2s;
+box-shadow: 0 0 30px rgba(108,99,255,0.4);
+}
+.video-play-circle:hover { transform: scale(1.05); background: var(–accent); }
+.video-label { font-size: 0.8rem; color: rgba(232,232,240,0.6); font-family: ‘JetBrains Mono’, monospace; }
+
+.lesson-tabs {
+display: flex; gap: 0.25rem;
+margin-bottom: 1.5rem;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 4px;
+width: fit-content;
+}
+.lesson-tab {
+background: none; border: none; cursor: pointer;
+font-family: inherit; font-size: 0.82rem;
+font-weight: 500;
+color: var(–text-muted);
+padding: 0.45rem 1rem;
+border-radius: 9px;
+transition: all 0.15s;
+}
+.lesson-tab.active { background: var(–surface2); color: var(–text); }
+
+.lesson-text {
+line-height: 1.9;
+font-size: 0.9rem;
+color: var(–text-dim);
+max-width: 720px;
+}
+.lesson-text h3 {
+font-size: 1.1rem;
+font-weight: 700;
+color: var(–text);
+margin: 1.5rem 0 0.75rem;
+}
+.lesson-text p { margin-bottom: 1rem; }
+.lesson-text ul { padding-right: 1.25rem; margin-bottom: 1rem; }
+.lesson-text li { margin-bottom: 0.4rem; }
+.lesson-text strong { color: var(–text); font-weight: 600; }
+
+.code-block {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 14px;
+overflow: hidden;
+margin: 1rem 0;
+}
+.code-header {
+padding: 0.6rem 1rem;
+border-bottom: 1px solid var(–border);
+display: flex; align-items: center; justify-content: space-between;
+background: var(–surface2);
+}
+.code-lang {
+font-size: 0.7rem;
+font-weight: 600;
+color: var(–accent);
+font-family: ‘JetBrains Mono’, monospace;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+.copy-btn {
+background: none; border: 1px solid var(–border); cursor: pointer;
+font-family: ‘JetBrains Mono’, monospace; font-size: 0.68rem;
+color: var(–text-muted); padding: 0.25rem 0.6rem; border-radius: 6px;
+transition: all 0.15s;
+}
+.copy-btn:hover { border-color: var(–accent); color: var(–accent); }
+.code-body {
+padding: 1.25rem;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 0.8rem;
+line-height: 1.7;
+color: #abb2bf;
+overflow-x: auto;
+}
+.code-body .kw { color: #c678dd; }
+.code-body .fn { color: #61afef; }
+.code-body .str { color: #98c379; }
+.code-body .cm { color: #5c6370; font-style: italic; }
+.code-body .num { color: #d19a66; }
+
+.comments-section { margin-top: 2rem; max-width: 720px; }
+.comments-title {
+font-size: 0.9rem; font-weight: 700;
+margin-bottom: 1rem;
+display: flex; align-items: center; gap: 0.6rem;
+}
+.comment-count {
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 5px;
+padding: 0.1rem 0.5rem;
+font-size: 0.7rem;
+font-family: ‘JetBrains Mono’, monospace;
+color: var(–text-muted);
+}
+.comment-form {
+display: flex; gap: 0.75rem;
+margin-bottom: 1.25rem;
+}
+.comment-input {
+flex: 1;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 10px;
+padding: 0.6rem 1rem;
+font-family: inherit;
+font-size: 0.85rem;
+color: var(–text);
+outline: none;
+transition: border-color 0.2s;
+resize: none;
+}
+.comment-input:focus { border-color: var(–accent); }
+.send-btn {
+background: var(–accent);
+border: none; cursor: pointer;
+border-radius: 10px;
+padding: 0 1.25rem;
+color: white;
+font-family: inherit;
+font-size: 0.85rem;
+font-weight: 600;
+transition: all 0.2s;
+white-space: nowrap;
+}
+.send-btn:hover { background: #7d75ff; }
+
+.comment-item {
+display: flex; gap: 0.75rem;
+padding: 0.85rem 0;
+border-bottom: 1px solid var(–border);
+}
+.comment-avatar {
+width: 32px; height: 32px; border-radius: 8px;
+background: linear-gradient(135deg, var(–accent), var(–accent2));
+display: flex; align-items: center; justify-content: center;
+font-size: 0.8rem;
+font-weight: 700;
+color: white;
+flex-shrink: 0;
+}
+.comment-body .comment-author {
+font-size: 0.78rem; font-weight: 600;
+margin-bottom: 0.3rem;
+}
+.comment-body .comment-text { font-size: 0.82rem; color: var(–text-dim); line-height: 1.6; }
+.comment-body .comment-time { font-size: 0.7rem; color: var(–text-muted); margin-top: 0.25rem; font-family: ‘JetBrains Mono’, monospace; }
+
+/* ── ADMIN LOGIN ── */
+.admin-center {
+display: flex; align-items: center; justify-content: center;
+min-height: calc(100vh - 60px);
+padding: 2rem;
+}
+.login-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 24px;
+padding: 2.5rem;
+width: 100%;
+max-width: 400px;
+}
+.login-icon {
+width: 52px; height: 52px; border-radius: 14px;
+background: linear-gradient(135deg, var(–accent), var(–accent2));
+display: flex; align-items: center; justify-content: center;
+font-size: 1.4rem;
+margin-bottom: 1.5rem;
+}
+.login-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.3px; }
+.login-sub { font-size: 0.85rem; color: var(–text-dim); margin-bottom: 2rem; }
+.form-field { margin-bottom: 1rem; }
+.form-label { font-size: 0.78rem; font-weight: 600; color: var(–text-dim); margin-bottom: 0.4rem; display: block; }
+.form-input {
+width: 100%;
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 10px;
+padding: 0.65rem 1rem;
+font-family: inherit;
+font-size: 0.9rem;
+color: var(–text);
+outline: none;
+transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(–accent); }
+.login-submit {
+width: 100%;
+background: var(–accent);
+border: none; cursor: pointer;
+border-radius: 12px;
+padding: 0.8rem;
+font-family: inherit;
+font-size: 0.9rem;
+font-weight: 700;
+color: white;
+margin-top: 0.5rem;
+transition: all 0.2s;
+}
+.login-submit:hover { background: #7d75ff; box-shadow: 0 6px 25px rgba(108,99,255,0.35); }
+
+/* ── TOAST ── */
+.toast {
+position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 0.75rem 1.5rem;
+font-size: 0.85rem;
+display: flex; align-items: center; gap: 0.6rem;
+box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+z-index: 9998;
+animation: toast-in 0.3s ease;
+opacity: 0; pointer-events: none;
+transition: opacity 0.3s;
+}
+.toast.show { opacity: 1; pointer-events: auto; }
+@keyframes toast-in {
+from { transform: translateX(-50%) translateY(10px); opacity: 0; }
+to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
+}
+
+/* ── MOBILE ── */
+.mobile-nav-btn {
+display: none;
+background: none; border: none; cursor: pointer;
+color: var(–text-dim); font-size: 1.1rem; padding: 0.3rem;
+}
+@media (max-width: 768px) {
+aside { display: none; position: fixed; z-index: 200; height: 100vh; top: 60px; }
+aside.open { display: block; }
+.mobile-nav-btn { display: flex; }
+.stats-row { grid-template-columns: 1fr; }
+.lessons-grid { grid-template-columns: 1fr; }
+.header-search { display: none; }
+.course-lessons { grid-template-columns: 1fr; }
+.home-hero { margin: 1rem; }
+.lessons-grid, .courses-list { padding: 0 1rem 1.5rem; }
+.stats-row { margin: 1rem; }
+.section-header { padding: 0 1rem; }
+.courses-header { padding: 1.5rem 1rem; }
+.lesson-content-area { padding: 1rem; }
+.lesson-top-bar { padding: 1rem; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- HEADER -->
+
+<header>
+  <button class="mobile-nav-btn" onclick="toggleSidebar()" title="القائمة">☰</button>
+  <a class="logo" onclick="navigate('home')">
+    <div class="logo-mark">MX</div>
+    <div class="logo-text">أكاديمية MAX</div>
+  </a>
+  <nav>
+    <button id="nav-home" class="active" onclick="navigate('home')">الرئيسية</button>
+    <button id="nav-courses" onclick="navigate('courses')">الدورات</button>
+  </nav>
+  <div class="header-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="ابحث عن درس أو موضوع..." id="searchInput" oninput="handleSearch(this.value)" />
+    <div class="search-dropdown" id="searchDropdown"></div>
+  </div>
+  <button class="admin-btn" onclick="navigate('admin')">⚙ لوحة التحكم</button>
+</header>
+
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+
+  <aside id="sidebar">
+    <div id="sidebarContent"></div>
+  </aside>
+
+  <!-- MAIN -->
+
+  <main>
+
+```
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <img class="hero-img" src="https://picsum.photos/seed/academy2026/1200/500" alt="Academy Hero" referrerpolicy="no-referrer" />
+    <div class="hero-overlay">
+      <div class="hero-eyebrow">DR. MAX MOUSA — أكاديمية البرمجة والذكاء الاصطناعي</div>
+      <h1 class="hero-title">تعلّم البرمجة<br>والذكاء الاصطناعي</h1>
+      <p class="hero-sub">دورات تعليمية عربية متخصصة في التعلم العميق، الشبكات العصبية، وتطبيقات الذكاء الاصطناعي الحديثة.</p>
+      <button class="hero-cta" onclick="navigate('courses')">ابدأ التعلم الآن ←</button>
+    </div>
+  </div>
+
+  <div class="stats-row" id="statsRow"></div>
+
+  <div class="section-header" style="margin-top:1.5rem;">
+    <div class="section-bar"></div>
+    <h2 class="section-title">أحدث الدروس</h2>
+  </div>
+  <div class="lessons-grid" id="latestLessonsGrid"></div>
+</div>
+
+<!-- COURSES PAGE -->
+<div class="page" id="page-courses">
+  <div class="courses-header">
+    <h1>الدورات التعليمية</h1>
+    <p>تصفح جميع السلاسل التعليمية في الأكاديمية وابدأ مسيرتك في تعلم البرمجة والذكاء الاصطناعي.</p>
+  </div>
+  <div class="courses-list" id="coursesList"></div>
+</div>
+
+<!-- LESSON PAGE -->
+<div class="page" id="page-lesson">
+  <div class="lesson-page">
+    <div class="lesson-top-bar">
+      <button class="back-btn" id="backBtn">← رجوع</button>
+      <div class="lesson-breadcrumb">
+        <span class="breadcrumb-series" id="breadcrumbSeries"></span>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-title" id="breadcrumbTitle"></span>
+      </div>
+      <button class="complete-btn" id="completeBtn" onclick="markComplete()">✓ وضع علامة مكتمل</button>
+    </div>
+    <div class="lesson-content-area">
+      <div class="lesson-video" id="lessonVideo"></div>
+      <div class="lesson-tabs">
+        <button class="lesson-tab active" onclick="switchTab('content',this)">📄 المحتوى</button>
+        <button class="lesson-tab" onclick="switchTab('code',this)">💻 الكود</button>
+        <button class="lesson-tab" onclick="switchTab('comments',this)">💬 التعليقات</button>
+      </div>
+      <div id="tabContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div class="page" id="page-admin">
+  <div class="admin-center">
+    <div class="login-card">
+      <div class="login-icon">🔐</div>
+      <h2 class="login-title">لوحة التحكم</h2>
+      <p class="login-sub">أدخل بياناتك للوصول إلى إدارة الأكاديمية</p>
+      <div class="form-field">
+        <label class="form-label">اسم المستخدم</label>
+        <input type="text" class="form-input" placeholder="admin" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">كلمة المرور</label>
+        <input type="password" class="form-input" placeholder="••••••••" />
+      </div>
+      <button class="login-submit" onclick="showToast('تم تسجيل الدخول بنجاح ✓')">تسجيل الدخول</button>
+    </div>
+  </div>
+</div>
+```
+
+  </main>
+</div>
+
+<!-- TOAST -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════ DATA ═══════════════ */
+const DATA = {
+  stats: { lessons: '48+', users: '1,200+', completions: '3,500+' },
+  series: [
+    {
+      id: 1, title: 'أساسيات التعلم العميق',
+      desc: 'رحلة شاملة من الصفر إلى التطبيق في الشبكات العصبية والتعلم العميق',
+      icon: '🧠', color: '#6c63ff',
+      lessons: [
+        { id: 1, title: 'مقدمة في الشبكات العصبية', slug: 'intro-nn', mins: 22 },
+        { id: 2, title: 'دالة الخطأ وخوارزمية الانتشار الخلفي', slug: 'backprop', mins: 35 },
+        { id: 3, title: 'طبقات التنشيط: ReLU وSigmoid', slug: 'activations', mins: 18 },
+        { id: 4, title: 'تحسين النماذج: Adam وSGD', slug: 'optimizers', mins: 28 },
+      ]
+    },
+    {
+      id: 2, title: 'الشبكات العصبية التلافيفية (CNN)',
+      desc: 'فهم معمّق لعمليات الـ Convolution والـ Pooling وتطبيقات رؤية الحاسوب',
+      icon: '👁', color: '#00d4aa',
+      lessons: [
+        { id: 5, title: 'مبدأ عمل الـ Convolution', slug: 'conv-basics', mins: 30 },
+        { id: 6, title: 'استراتيجيات الـ Padding', slug: 'padding', mins: 20 },
+        { id: 7, title: 'طبقات الـ Pooling وتقليص الأبعاد', slug: 'pooling', mins: 25 },
+        { id: 8, title: 'بناء CNN كامل من الصفر', slug: 'build-cnn', mins: 45 },
+      ]
+    },
+    {
+      id: 3, title: 'محولات الرؤية (Vision Transformer)',
+      desc: 'معمارية ViT وكيفية ضبط النماذج المُدرَّبة مسبقاً على بيانات مخصصة',
+      icon: '⚡', color: '#ff6b6b',
+      lessons: [
+        { id: 9, title: 'من CNN إلى Transformer: الفلسفة', slug: 'cnn-to-vit', mins: 28 },
+        { id: 10, title: 'آلية الانتباه (Attention Mechanism)', slug: 'attention', mins: 40 },
+        { id: 11, title: 'Fine-tuning ViT مع Hugging Face', slug: 'vit-finetune', mins: 50 },
+        { id: 12, title: 'نشر النموذج وكتابة سكريبت الاستنتاج', slug: 'inference', mins: 35 },
+      ]
+    },
+    {
+      id: 4, title: 'الشبكات التكرارية: RNN و LSTM و GRU',
+      desc: 'معالجة التسلسلات الزمنية والنصوص باستخدام الشبكات التكرارية الحديثة',
+      icon: '🔄', color: '#f59e0b',
+      lessons: [
+        { id: 13, title: 'مشكلة التتابع وحلول RNN', slug: 'rnn-intro', mins: 22 },
+        { id: 14, title: 'LSTM: البوابات والذاكرة الطويلة', slug: 'lstm', mins: 38 },
+        { id: 15, title: 'GRU: البديل الأكثر كفاءة', slug: 'gru', mins: 30 },
+        { id: 16, title: 'مقارنة RNN vs LSTM vs GRU', slug: 'rnn-compare', mins: 25 },
+      ]
+    }
+  ]
+};
+
+/* Flatten lessons */
+const allLessons = DATA.series.flatMap(s => s.lessons.map(l => ({ ...l, seriesId: s.id, seriesTitle: s.title })));
+
+/* ═══════════════ STATE ═══════════════ */
+let currentPage = 'home';
+let currentLessonSlug = null;
+let completedLessons = new Set();
+let currentTab = 'content';
+let sidebarOpen = false;
+
+/* ═══════════════ INIT ═══════════════ */
+window.onload = () => {
+  renderStats();
+  renderLatestLessons();
+  renderCoursesList();
+  renderSidebar();
+};
+
+/* ═══════════════ NAVIGATE ═══════════════ */
+function navigate(page, slug) {
+  currentPage = page;
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  if (page === 'home') document.getElementById('nav-home').classList.add('active');
+  if (page === 'courses') document.getElementById('nav-courses').classList.add('active');
+
+  if (page === 'lesson' && slug) {
+    currentLessonSlug = slug;
+    renderLesson(slug);
+    renderSidebar(slug);
+  }
+
+  closeSidebar();
+}
+
+/* ═══════════════ STATS ═══════════════ */
+function renderStats() {
+  const icons = ['📚', '👥', '🏆'];
+  const labels = ['درس تعليمي', 'طالب مسجّل', 'إنجاز مكتمل'];
+  const vals = [DATA.stats.lessons, DATA.stats.users, DATA.stats.completions];
+  document.getElementById('statsRow').innerHTML = vals.map((v, i) =>
+    `<div class="stat-card">
+      <div class="stat-icon">${icons[i]}</div>
+      <div class="stat-num">${v}</div>
+      <div class="stat-label">${labels[i]}</div>
+    </div>`
+  ).join('');
+}
+
+/* ═══════════════ LATEST LESSONS ═══════════════ */
+function renderLatestLessons() {
+  const latest = allLessons.slice(0, 4);
+  document.getElementById('latestLessonsGrid').innerHTML = latest.map(l =>
+    `<div class="lesson-card" onclick="navigate('lesson','${l.slug}')">
+      <div class="lesson-thumb">
+        <img src="https://picsum.photos/seed/${l.slug}/600/338" alt="${l.title}" referrerpolicy="no-referrer" />
+        <div class="lesson-thumb-overlay">
+          <div class="play-btn-big">▶</div>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="lesson-series-tag">${l.seriesTitle}</div>
+        <div class="lesson-title">${l.title}</div>
+        <div class="lesson-footer">
+          <div class="lesson-meta">▶ ${l.mins} دقيقة</div>
+          <div class="arrow-btn">←</div>
+        </div>
+      </div>
+    </div>`
+  ).join('');
+}
+
+/* ═══════════════ COURSES ═══════════════ */
+function renderCoursesList() {
+  document.getElementById('coursesList').innerHTML = DATA.series.map(s =>
+    `<div class="course-card">
+      <div class="course-head">
+        <div class="course-icon">${s.icon}</div>
+        <div class="course-meta">
+          <h2>${s.title}</h2>
+          <p>${s.desc}</p>
+        </div>
+        <div class="course-badge">${s.lessons.length} دروس</div>
+      </div>
+      <div class="course-lessons">
+        ${s.lessons.map((l, i) =>
+          `<div class="course-lesson-item" onclick="navigate('lesson','${l.slug}')">
+            <div class="lesson-num">${String(i+1).padStart(2,'0')}</div>
+            <div class="course-lesson-title">${l.title}</div>
+            <div class="play-icon">▶</div>
+          </div>`
+        ).join('')}
+      </div>
+    </div>`
+  ).join('');
+}
+
+/* ═══════════════ LESSON ═══════════════ */
+function renderLesson(slug) {
+  const lesson = allLessons.find(l => l.slug === slug);
+  if (!lesson) return;
+
+  document.getElementById('breadcrumbSeries').textContent = lesson.seriesTitle;
+  document.getElementById('breadcrumbTitle').textContent = lesson.title;
+  document.getElementById('backBtn').onclick = () => navigate('courses');
+
+  const done = completedLessons.has(slug);
+  const cb = document.getElementById('completeBtn');
+  cb.className = 'complete-btn' + (done ? ' done' : '');
+  cb.innerHTML = done ? '✓ مكتمل' : '✓ وضع علامة مكتمل';
+
+  document.getElementById('lessonVideo').innerHTML =
+    `<img src="https://picsum.photos/seed/${slug}vid/1280/720" alt="${lesson.title}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;" />
+     <div class="video-play-overlay">
+       <div class="video-play-circle">▶</div>
+       <div class="video-label">// ${lesson.mins} min · مشاهدة الدرس</div>
+     </div>`;
+
+  switchTab('content', document.querySelector('.lesson-tab'));
+}
+
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.lesson-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const lesson = allLessons.find(l => l.slug === currentLessonSlug);
+  const el = document.getElementById('tabContent');
+
+  if (tab === 'content') {
+    el.innerHTML = `
+      <div class="lesson-text">
+        <h3>مقدمة الدرس</h3>
+        <p>في هذا الدرس سنتناول موضوع <strong>${lesson?.title || ''}</strong> بشكل معمّق، مع التركيز على الفهم النظري والتطبيق العملي باستخدام Python وPyTorch.</p>
+        <p>تُعدّ هذه المفاهيم أساسية لأي مهندس يريد العمل في مجال الذكاء الاصطناعي، وسنشرحها بأسلوب بسيط وتدريجي مع أمثلة تطبيقية.</p>
+        <h3>ما ستتعلمه في هذا الدرس</h3>
+        <ul>
+          <li>فهم المبادئ النظرية خطوة بخطوة</li>
+          <li>تطبيق المفاهيم باستخدام PyTorch أو TensorFlow</li>
+          <li>تصحيح الأخطاء الشائعة وأفضل الممارسات</li>
+          <li>تمارين ومهام تطبيقية للتعزيز</li>
+        </ul>
+        <h3>متطلبات الدرس</h3>
+        <p>يُفضَّل إتمام الدروس السابقة في نفس السلسلة، ومعرفة أساسية بلغة Python وعمليات المصفوفات.</p>
+      </div>`;
+  } else if (tab === 'code') {
+    el.innerHTML = `
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">python</span>
+          <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+        </div>
+        <pre class="code-body"><span class="cm"># مثال تطبيقي — ${lesson?.title || ''}</span>
+<span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.optim <span class="kw">as</span> optim
+
+<span class="cm"># تعريف النموذج</span>
+<span class="kw">class</span> <span class="fn">SimpleModel</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        <span class="kw">super</span>().<span class="fn">__init__</span>()
+        self.fc1 = nn.<span class="fn">Linear</span>(<span class="num">784</span>, <span class="num">256</span>)
+        self.fc2 = nn.<span class="fn">Linear</span>(<span class="num">256</span>, <span class="num">10</span>)
+        self.relu = nn.<span class="fn">ReLU</span>()
+        self.dropout = nn.<span class="fn">Dropout</span>(<span class="num">0.3</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        x = self.<span class="fn">relu</span>(self.<span class="fn">fc1</span>(x))
+        x = self.<span class="fn">dropout</span>(x)
+        <span class="kw">return</span> self.<span class="fn">fc2</span>(x)
+
+<span class="cm"># إنشاء النموذج والمحسّن</span>
+model = <span class="fn">SimpleModel</span>()
+optimizer = optim.<span class="fn">Adam</span>(model.<span class="fn">parameters</span>(), lr=<span class="num">1e-3</span>)
+criterion = nn.<span class="fn">CrossEntropyLoss</span>()
+
+<span class="cm"># حلقة التدريب</span>
+<span class="kw">for</span> epoch <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
+    model.<span class="fn">train</span>()
+    optimizer.<span class="fn">zero_grad</span>()
+    outputs = model(inputs)
+    loss = <span class="fn">criterion</span>(outputs, targets)
+    loss.<span class="fn">backward</span>()
+    optimizer.<span class="fn">step</span>()
+    <span class="fn">print</span>(<span class="str">f"Epoch {epoch+1}: Loss = {loss.item():.4f}"</span>)</pre>
+
+```
+  </div>`;
+```
+
+} else if (tab === ‘comments’) {
+el.innerHTML = ` <div class="comments-section"> <div class="comments-title"> التعليقات <span class="comment-count">3</span> </div> <div class="comment-form"> <input class="comment-input" id="commentInput" placeholder="اكتب تعليقاً أو سؤالاً..." /> <button class="send-btn" onclick="addComment()">إرسال</button> </div> <div id="commentsList"> ${renderComments([ { author: 'أحمد العتيبي', text: 'شرح ممتاز جداً، استفدت كثيراً من المثال العملي!', time: 'منذ يومين' }, { author: 'سارة الحربي', text: 'هل يمكن تطبيق نفس المفهوم مع TensorFlow بدلاً من PyTorch؟', time: 'منذ أسبوع' }, { author: 'محمد الزهراني', text: 'أفضل شرح وجدته باللغة العربية لهذا الموضوع، شكراً دكتور MAX!', time: 'منذ أسبوعين' }, ])} </div> </div>`;
+}
+}
+
+function renderComments(list) {
+return list.map(c => ` <div class="comment-item"> <div class="comment-avatar">${c.author[0]}</div> <div class="comment-body"> <div class="comment-author">${c.author}</div> <div class="comment-text">${c.text}</div> <div class="comment-time">${c.time}</div> </div> </div>`).join(’’);
+}
+
+function addComment() {
+const inp = document.getElementById(‘commentInput’);
+if (!inp || !inp.value.trim()) return;
+const list = document.getElementById(‘commentsList’);
+const div = document.createElement(‘div’);
+div.innerHTML = renderComments([{ author: ‘أنت’, text: inp.value, time: ‘الآن’ }]);
+list.prepend(div.firstElementChild);
+inp.value = ‘’;
+showToast(‘تم إضافة تعليقك ✓’);
+}
+
+function markComplete() {
+if (!currentLessonSlug) return;
+completedLessons.add(currentLessonSlug);
+const cb = document.getElementById(‘completeBtn’);
+cb.className = ‘complete-btn done’;
+cb.innerHTML = ‘✓ مكتمل’;
+renderSidebar(currentLessonSlug);
+showToast(‘تم تسجيل إنجازك! 🎉’);
+}
+
+/* ═══════════════ SIDEBAR ═══════════════ */
+function renderSidebar(activeSlug) {
+document.getElementById(‘sidebarContent’).innerHTML = DATA.series.map(s => {
+const isOpenSeries = s.lessons.some(l => l.slug === activeSlug);
+return `<div class="sidebar-section"> <button class="sidebar-series-btn" onclick="toggleSeries(this)"> <div class="sidebar-series-icon">${s.icon}</div> <span>${s.title}</span> </button> <div class="sidebar-lessons ${isOpenSeries ? 'open' : ''}"> ${s.lessons.map(l =>`<a class="sidebar-lesson-link ${l.slug === activeSlug ? 'active' : ''}" onclick="navigate('lesson','${l.slug}')">
+<span class="play-dot"></span>
+${l.title}
+</a>` ).join('')} </div> </div>`;
+}).join(’’);
+}
+
+function toggleSeries(btn) {
+const lessons = btn.nextElementSibling;
+lessons.classList.toggle(‘open’);
+}
+
+/* ═══════════════ SEARCH ═══════════════ */
+function handleSearch(q) {
+const dd = document.getElementById(‘searchDropdown’);
+if (!q || q.length < 2) { dd.classList.remove(‘visible’); return; }
+const results = allLessons.filter(l =>
+l.title.includes(q) || l.seriesTitle.includes(q)
+).slice(0, 6);
+if (!results.length) { dd.classList.remove(‘visible’); return; }
+dd.innerHTML = results.map(r =>
+`<div class="search-item" onclick="navigate('lesson','${r.slug}');document.getElementById('searchInput').value='';document.getElementById('searchDropdown').classList.remove('visible')"> <div class="search-item-title">${r.title}</div> <div class="search-item-type">${r.seriesTitle}</div> </div>`
+).join(’’);
+dd.classList.add(‘visible’);
+}
+
+document.addEventListener(‘click’, e => {
+if (!e.target.closest(’.header-search’))
+document.getElementById(‘searchDropdown’).classList.remove(‘visible’);
+});
+
+/* ═══════════════ COPY CODE ═══════════════ */
+function copyCode(btn) {
+const code = btn.closest(’.code-block’).querySelector(’.code-body’).textContent;
+navigator.clipboard.writeText(code).then(() => {
+btn.textContent = ‘تم النسخ ✓’;
+setTimeout(() => btn.textContent = ‘نسخ’, 2000);
+});
+}
+
+/* ═══════════════ TOAST ═══════════════ */
+function showToast(msg) {
+const t = document.getElementById(‘toast’);
+t.textContent = msg;
+t.classList.add(‘show’);
+setTimeout(() => t.classList.remove(‘show’), 3000);
+}
+
+/* ═══════════════ MOBILE ═══════════════ */
+function toggleSidebar() {
+const sb = document.getElementById(‘sidebar’);
+sidebarOpen = !sidebarOpen;
+sb.classList.toggle(‘open’, sidebarOpen);
+}
+function closeSidebar() {
+document.getElementById(‘sidebar’).classList.remove(‘open’);
+sidebarOpen = false;
+}
+</script>
+
+</body>
+</html>
