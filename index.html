@@ -2,1286 +2,1131 @@
 
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>أكاديمية MAX — تعلّم البرمجة والذكاء الاصطناعي</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ما هي البارامترات؟ | أكاديمية الروبوت</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #17171f;
-    --border: #2a2a38;
-    --accent: #6c63ff;
-    --accent2: #00d4aa;
-    --accent3: #ff6b6b;
-    --text: #e8e8f0;
-    --text-dim: #7a7a9a;
-    --text-muted: #4a4a6a;
-    --glow: rgba(108,99,255,0.15);
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --card: #1a2235;
+    --border: #2a3a55;
+    --accent: #00d4ff;
+    --gold: #ffd700;
+    --green: #00ff88;
+    --red: #ff4d6d;
+    --purple: #a855f7;
+    --text: #e8f0fe;
+    --muted: #7a90b0;
   }
 
-- { margin:0; padding:0; box-sizing:border-box; }
+- { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-font-family: ‘IBM Plex Sans Arabic’, sans-serif;
 background: var(–bg);
 color: var(–text);
+font-family: ‘Cairo’, sans-serif;
 min-height: 100vh;
 overflow-x: hidden;
 }
 
-/* ─── SCROLLBAR ─── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(–bg); }
-::-webkit-scrollbar-thumb { background: var(–border); border-radius: 3px; }
-
-/* ─── NOISE OVERLAY ─── */
+/* BACKGROUND */
 body::before {
 content: ‘’;
-position: fixed; inset: 0;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.03’/%3E%3C/svg%3E”);
+position: fixed;
+inset: 0;
+background:
+radial-gradient(ellipse 60% 40% at 20% 20%, rgba(0,212,255,0.06) 0%, transparent 70%),
+radial-gradient(ellipse 50% 50% at 80% 80%, rgba(168,85,247,0.06) 0%, transparent 70%);
 pointer-events: none;
-z-index: 9999;
-opacity: 0.4;
+z-index: 0;
 }
 
-/* ─── HEADER ─── */
+.container {
+max-width: 960px;
+margin: 0 auto;
+padding: 2rem 1.5rem;
+position: relative;
+z-index: 1;
+}
+
+/* HEADER */
 header {
-position: sticky; top: 0; z-index: 100;
-height: 60px;
-background: rgba(10,10,15,0.85);
-backdrop-filter: blur(20px);
-border-bottom: 1px solid var(–border);
-display: flex; align-items: center;
-padding: 0 2rem;
-gap: 2rem;
+text-align: center;
+padding: 3rem 0 2rem;
 }
 
-.logo {
-display: flex; align-items: center; gap: 0.75rem;
-text-decoration: none;
-cursor: pointer;
-}
-.logo-mark {
-width: 32px; height: 32px;
-background: linear-gradient(135deg, var(–accent), var(–accent2));
-border-radius: 8px;
-display: flex; align-items: center; justify-content: center;
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 12px;
-font-weight: 600;
-color: white;
-letter-spacing: -0.5px;
-}
-.logo-text {
-font-size: 1rem;
-font-weight: 700;
-color: var(–text);
-letter-spacing: -0.3px;
-}
-
-nav {
-display: flex; gap: 0.25rem;
-margin-right: 1.5rem;
-}
-nav button {
-background: none; border: none; cursor: pointer;
-padding: 0.4rem 0.85rem;
-border-radius: 8px;
-font-size: 0.85rem;
-font-weight: 500;
-font-family: inherit;
-color: var(–text-dim);
-transition: all 0.2s;
-}
-nav button:hover { background: var(–surface2); color: var(–text); }
-nav button.active { background: var(–surface2); color: var(–text); }
-
-.header-search {
-flex: 1; max-width: 360px;
-margin-right: auto;
-position: relative;
-}
-.header-search input {
-width: 100%;
-background: var(–surface2);
+.badge {
+display: inline-block;
+background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(168,85,247,0.15));
 border: 1px solid var(–border);
-border-radius: 10px;
-padding: 0.45rem 2.5rem 0.45rem 1rem;
-color: var(–text);
-font-family: inherit;
-font-size: 0.85rem;
-outline: none;
-transition: border-color 0.2s;
-}
-.header-search input:focus { border-color: var(–accent); }
-.header-search input::placeholder { color: var(–text-muted); }
-.search-icon {
-position: absolute; right: 0.75rem; top: 50%;
-transform: translateY(-50%);
-color: var(–text-muted);
-font-size: 0.9rem;
-}
-.search-dropdown {
-position: absolute; top: calc(100% + 8px); right: 0; left: 0;
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 12px;
-overflow: hidden;
-box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-z-index: 200;
-display: none;
-}
-.search-dropdown.visible { display: block; }
-.search-item {
-padding: 0.75rem 1rem;
-cursor: pointer;
-border-bottom: 1px solid var(–border);
-transition: background 0.15s;
-}
-.search-item:last-child { border-bottom: none; }
-.search-item:hover { background: var(–surface2); }
-.search-item-title { font-size: 0.875rem; font-weight: 500; }
-.search-item-type { font-size: 0.7rem; color: var(–accent2); text-transform: uppercase; margin-top: 2px; letter-spacing: 0.5px; }
-
-.admin-btn {
-background: none;
-border: 1px solid var(–border);
-border-radius: 8px;
-padding: 0.35rem 0.85rem;
-color: var(–text-dim);
-font-size: 0.78rem;
-font-family: inherit;
-cursor: pointer;
-transition: all 0.2s;
-}
-.admin-btn:hover { border-color: var(–accent); color: var(–accent); }
-
-/* ─── LAYOUT ─── */
-.app-body {
-display: flex;
-min-height: calc(100vh - 60px);
-}
-
-/* ─── SIDEBAR ─── */
-aside {
-width: 260px;
-min-width: 260px;
-border-left: 1px solid var(–border);
-background: var(–surface);
-height: calc(100vh - 60px);
-position: sticky;
-top: 60px;
-overflow-y: auto;
-padding: 1.25rem 0;
-}
-
-.sidebar-section { margin-bottom: 1.5rem; }
-.sidebar-series-btn {
-width: 100%;
-background: none; border: none; cursor: pointer;
-display: flex; align-items: center; gap: 0.75rem;
-padding: 0.6rem 1.25rem;
-font-family: inherit;
-font-size: 0.82rem;
-font-weight: 600;
-color: var(–text-dim);
-text-align: right;
-transition: all 0.2s;
-}
-.sidebar-series-btn:hover { color: var(–text); background: var(–surface2); }
-.sidebar-series-icon {
-width: 28px; height: 28px; border-radius: 7px;
-background: var(–surface2);
-display: flex; align-items: center; justify-content: center;
-font-size: 0.75rem;
-flex-shrink: 0;
-transition: background 0.2s;
-}
-.sidebar-series-btn:hover .sidebar-series-icon { background: var(–border); }
-.sidebar-lessons {
-border-right: 2px solid var(–border);
-margin-right: 1.8rem;
-padding-right: 0.75rem;
-margin-bottom: 0.5rem;
-display: none;
-}
-.sidebar-lessons.open { display: block; }
-.sidebar-lesson-link {
-display: flex; align-items: center; gap: 0.5rem;
-padding: 0.45rem 0.5rem;
-border-radius: 7px;
+color: var(–accent);
 font-size: 0.8rem;
-color: var(–text-muted);
-cursor: pointer;
-transition: all 0.15s;
-text-decoration: none;
-}
-.sidebar-lesson-link:hover { color: var(–text); background: var(–surface2); }
-.sidebar-lesson-link.active { background: var(–accent); color: white; }
-.sidebar-lesson-link.active .play-dot { background: white; }
-.play-dot {
-width: 6px; height: 6px; border-radius: 50%;
-background: var(–text-muted);
-flex-shrink: 0;
-transition: background 0.15s;
+padding: 0.35rem 1rem;
+border-radius: 99px;
+margin-bottom: 1.2rem;
+letter-spacing: 0.05em;
 }
 
-/* ─── MAIN ─── */
-main {
+h1 {
+font-family: ‘Tajawal’, sans-serif;
+font-size: clamp(2rem, 5vw, 3.2rem);
+font-weight: 900;
+line-height: 1.2;
+background: linear-gradient(135deg, #fff 30%, var(–accent));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+margin-bottom: 1rem;
+}
+
+.subtitle {
+color: var(–muted);
+font-size: 1.05rem;
+max-width: 600px;
+margin: 0 auto;
+line-height: 1.8;
+}
+
+/* SECTION TITLES */
+.section-title {
+font-family: ‘Tajawal’, sans-serif;
+font-size: 1.5rem;
+font-weight: 700;
+color: var(–accent);
+margin-bottom: 1.2rem;
+display: flex;
+align-items: center;
+gap: 0.6rem;
+}
+
+.section-title::after {
+content: ‘’;
 flex: 1;
-min-width: 0;
+height: 1px;
+background: linear-gradient(to left, transparent, var(–border));
+}
+
+/* ANALOGY CARD */
+.analogy-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 2rem;
+margin-bottom: 2rem;
+position: relative;
 overflow: hidden;
 }
 
-/* ─── PAGES ─── */
-.page { display: none; }
-.page.active { display: block; }
+.analogy-card::before {
+content: ‘’;
+position: absolute;
+top: 0; right: 0;
+width: 200px; height: 200px;
+background: radial-gradient(circle, rgba(255,215,0,0.07), transparent 70%);
+pointer-events: none;
+}
 
-/* ── HOME PAGE ── */
-.home-hero {
-position: relative;
-margin: 2rem 2rem 0;
-border-radius: 20px;
-overflow: hidden;
-aspect-ratio: 21/8;
+.analogy-grid {
+display: grid;
+grid-template-columns: 1fr 60px 1fr;
+gap: 1rem;
+align-items: center;
+margin-top: 1.5rem;
+}
+
+.analogy-box {
+background: rgba(255,255,255,0.03);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 1.2rem;
+text-align: center;
+}
+
+.analogy-box .emoji { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.analogy-box .label {
+font-size: 0.75rem;
+color: var(–muted);
+text-transform: uppercase;
+letter-spacing: 0.08em;
+margin-bottom: 0.3rem;
+}
+.analogy-box .value {
+font-weight: 700;
+font-size: 1rem;
+color: var(–gold);
+}
+
+.arrow-divider {
+text-align: center;
+font-size: 1.5rem;
+color: var(–accent);
+}
+
+/* ===== COOK SIMULATOR ===== */
+.cook-section {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 2rem;
+margin-bottom: 2rem;
+}
+
+.cook-desc {
+color: var(–muted);
+font-size: 0.95rem;
+line-height: 1.8;
+margin-bottom: 1.5rem;
+}
+
+.params-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 1.2rem;
+margin-bottom: 1.5rem;
+}
+
+.param-control {
+background: rgba(255,255,255,0.03);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 1.2rem;
+transition: border-color 0.3s;
+}
+
+.param-control:hover { border-color: var(–accent); }
+
+.param-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 0.8rem;
+}
+
+.param-name {
+font-size: 0.85rem;
+font-weight: 600;
+color: var(–text);
+display: flex;
+align-items: center;
+gap: 0.4rem;
+}
+
+.param-val {
+font-size: 1.1rem;
+font-weight: 900;
+color: var(–accent);
+font-variant-numeric: tabular-nums;
+}
+
+.param-desc {
+font-size: 0.75rem;
+color: var(–muted);
+margin-bottom: 0.8rem;
+line-height: 1.6;
+}
+
+input[type=“range”] {
+width: 100%;
+-webkit-appearance: none;
+height: 6px;
+background: var(–border);
+border-radius: 3px;
+outline: none;
+cursor: pointer;
+}
+
+input[type=“range”]::-webkit-slider-thumb {
+-webkit-appearance: none;
+width: 18px; height: 18px;
+background: var(–accent);
+border-radius: 50%;
+border: 2px solid var(–bg);
+box-shadow: 0 0 8px rgba(0,212,255,0.5);
+transition: transform 0.2s;
+}
+
+input[type=“range”]::-webkit-slider-thumb:hover {
+transform: scale(1.3);
+}
+
+/* FOOD OUTPUT */
+.food-output {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 1.5rem;
+text-align: center;
+transition: all 0.4s ease;
+}
+
+.food-emoji {
+font-size: 5rem;
+display: block;
+margin-bottom: 0.8rem;
+transition: all 0.3s ease;
+filter: drop-shadow(0 0 20px rgba(0,212,255,0.3));
+}
+
+.food-name {
+font-family: ‘Tajawal’, sans-serif;
+font-size: 1.4rem;
+font-weight: 700;
+margin-bottom: 0.4rem;
+}
+
+.food-score {
+display: inline-flex;
+align-items: center;
+gap: 0.4rem;
+padding: 0.3rem 1rem;
+border-radius: 99px;
+font-size: 0.85rem;
+font-weight: 600;
+margin-top: 0.5rem;
+}
+
+.score-good { background: rgba(0,255,136,0.1); color: var(–green); border: 1px solid rgba(0,255,136,0.3); }
+.score-mid  { background: rgba(255,215,0,0.1);  color: var(–gold);  border: 1px solid rgba(255,215,0,0.3); }
+.score-bad  { background: rgba(255,77,109,0.1); color: var(–red);   border: 1px solid rgba(255,77,109,0.3); }
+
+/* TRAINING SIMULATOR */
+.train-section {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 2rem;
+margin-bottom: 2rem;
+}
+
+.train-desc {
+color: var(–muted);
+font-size: 0.95rem;
+line-height: 1.8;
+margin-bottom: 1.5rem;
+}
+
+.brain-visual {
+display: flex;
+flex-wrap: wrap;
+gap: 6px;
+justify-content: center;
+margin-bottom: 1.5rem;
+padding: 1.5rem;
+background: var(–surface);
+border-radius: 12px;
+border: 1px solid var(–border);
+min-height: 120px;
+align-items: center;
+}
+
+.neuron {
+width: 14px; height: 14px;
+border-radius: 50%;
+background: var(–border);
+transition: all 0.3s ease;
+cursor: default;
+}
+
+.neuron.active {
+background: var(–accent);
+box-shadow: 0 0 8px var(–accent);
+transform: scale(1.2);
+}
+
+.neuron.learned {
+background: var(–green);
+box-shadow: 0 0 6px var(–green);
+}
+
+.train-controls {
+display: flex;
+gap: 1rem;
+flex-wrap: wrap;
+margin-bottom: 1.2rem;
+}
+
+.btn {
+padding: 0.7rem 1.5rem;
+border-radius: 10px;
+border: none;
+font-family: ‘Cairo’, sans-serif;
+font-size: 0.9rem;
+font-weight: 700;
+cursor: pointer;
+transition: all 0.25s ease;
+display: flex;
+align-items: center;
+gap: 0.4rem;
+}
+
+.btn-primary {
+background: linear-gradient(135deg, var(–accent), #0088cc);
+color: #000;
+}
+
+.btn-secondary {
+background: var(–surface);
+color: var(–text);
 border: 1px solid var(–border);
 }
-.hero-img {
-width: 100%; height: 100%;
-object-fit: cover;
-transition: transform 0.7s ease;
-filter: brightness(0.65) saturate(0.8);
-}
-.home-hero:hover .hero-img { transform: scale(1.03); }
-.hero-overlay {
-position: absolute; inset: 0;
-background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0.4) 50%, transparent 100%);
-display: flex; flex-direction: column; justify-content: flex-end;
-padding: 2.5rem;
-}
-.hero-eyebrow {
-font-size: 0.7rem;
-font-weight: 600;
-color: var(–accent2);
-letter-spacing: 2px;
-text-transform: uppercase;
-margin-bottom: 0.75rem;
-font-family: ‘JetBrains Mono’, monospace;
-}
-.hero-title {
-font-size: clamp(2rem, 4vw, 3.5rem);
-font-weight: 700;
-line-height: 1.15;
-margin-bottom: 0.75rem;
-letter-spacing: -0.5px;
-}
-.hero-sub {
-font-size: 1rem;
-color: rgba(232,232,240,0.7);
-max-width: 520px;
-line-height: 1.6;
-margin-bottom: 1.75rem;
-}
-.hero-cta {
-display: inline-flex; align-items: center; gap: 0.6rem;
-background: var(–accent);
-color: white;
-border: none;
-border-radius: 12px;
-padding: 0.75rem 1.75rem;
-font-size: 0.925rem;
-font-weight: 600;
-font-family: inherit;
-cursor: pointer;
-transition: all 0.2s;
-text-decoration: none;
-}
-.hero-cta:hover { background: #7d75ff; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(108,99,255,0.35); }
 
-.stats-row {
+.btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,212,255,0.3); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.train-stats {
 display: grid;
 grid-template-columns: repeat(3, 1fr);
 gap: 1rem;
-margin: 1.5rem 2rem;
+margin-top: 1.2rem;
 }
-.stat-card {
+
+.stat-box {
 background: var(–surface);
 border: 1px solid var(–border);
-border-radius: 16px;
-padding: 1.5rem;
-display: flex; flex-direction: column;
-position: relative;
-overflow: hidden;
-transition: border-color 0.2s, transform 0.2s;
-}
-.stat-card::before {
-content: ‘’;
-position: absolute; top: 0; right: 0;
-width: 80px; height: 80px;
-border-radius: 50%;
-filter: blur(30px);
-opacity: 0.15;
-}
-.stat-card:nth-child(1)::before { background: var(–accent); }
-.stat-card:nth-child(2)::before { background: var(–accent2); }
-.stat-card:nth-child(3)::before { background: var(–accent3); }
-.stat-card:hover { border-color: var(–accent); transform: translateY(-2px); }
-.stat-icon {
-font-size: 1.25rem; margin-bottom: 1rem;
-}
-.stat-num {
-font-size: 2rem; font-weight: 700;
-letter-spacing: -1px;
-line-height: 1;
-margin-bottom: 0.3rem;
-}
-.stat-card:nth-child(1) .stat-num { color: var(–accent); }
-.stat-card:nth-child(2) .stat-num { color: var(–accent2); }
-.stat-card:nth-child(3) .stat-num { color: var(–accent3); }
-.stat-label { font-size: 0.8rem; color: var(–text-dim); font-weight: 500; }
-
-.section-header {
-display: flex; align-items: center; gap: 0.75rem;
-padding: 0 2rem;
-margin-bottom: 1.25rem;
-}
-.section-bar {
-width: 3px; height: 22px;
-background: linear-gradient(to bottom, var(–accent), var(–accent2));
-border-radius: 2px;
-}
-.section-title {
-font-size: 1.1rem;
-font-weight: 700;
-letter-spacing: -0.3px;
-}
-
-.lessons-grid {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-gap: 1rem;
-padding: 0 2rem 2rem;
-}
-.lesson-card {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 16px;
-overflow: hidden;
-cursor: pointer;
-transition: all 0.25s;
-display: flex; flex-direction: column;
-}
-.lesson-card:hover { border-color: var(–accent); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
-.lesson-thumb {
-aspect-ratio: 16/9;
-position: relative;
-background: var(–surface2);
-overflow: hidden;
-}
-.lesson-thumb img {
-width: 100%; height: 100%;
-object-fit: cover;
-transition: transform 0.4s;
-filter: saturate(0.7);
-}
-.lesson-card:hover .lesson-thumb img { transform: scale(1.05); filter: saturate(1); }
-.lesson-thumb-overlay {
-position: absolute; inset: 0;
-background: rgba(10,10,15,0.35);
-display: flex; align-items: center; justify-content: center;
-opacity: 0;
-transition: opacity 0.25s;
-}
-.lesson-card:hover .lesson-thumb-overlay { opacity: 1; }
-.play-btn-big {
-width: 48px; height: 48px; border-radius: 50%;
-background: rgba(255,255,255,0.9);
-display: flex; align-items: center; justify-content: center;
-font-size: 1.1rem;
-}
-.lesson-body { padding: 1.1rem; flex: 1; }
-.lesson-series-tag {
-font-size: 0.67rem;
-font-weight: 700;
-color: var(–accent2);
-letter-spacing: 1px;
-text-transform: uppercase;
-margin-bottom: 0.5rem;
-}
-.lesson-title {
-font-size: 0.95rem;
-font-weight: 600;
-line-height: 1.4;
-margin-bottom: 0.85rem;
-}
-.lesson-footer {
-display: flex; align-items: center; justify-content: space-between;
-}
-.lesson-meta { font-size: 0.75rem; color: var(–text-muted); display: flex; align-items: center; gap: 0.4rem; }
-.arrow-btn {
-width: 32px; height: 32px; border-radius: 9px;
-background: var(–surface2);
-border: 1px solid var(–border);
-display: flex; align-items: center; justify-content: center;
-color: var(–text-dim);
-font-size: 0.85rem;
-transition: all 0.2s;
-}
-.lesson-card:hover .arrow-btn { background: var(–accent); border-color: var(–accent); color: white; }
-
-/* ── COURSES PAGE ── */
-.courses-header {
-padding: 2.5rem 2rem 1.5rem;
-border-bottom: 1px solid var(–border);
-}
-.courses-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
-.courses-header p { color: var(–text-dim); font-size: 0.9rem; max-width: 500px; line-height: 1.6; }
-
-.courses-list { padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 1.25rem; }
-.course-card {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 18px;
-overflow: hidden;
-transition: border-color 0.2s;
-}
-.course-card:hover { border-color: var(–border); }
-.course-head {
-padding: 1.5rem;
-border-bottom: 1px solid var(–border);
-background: var(–surface2);
-display: flex; align-items: center; gap: 1rem;
-}
-.course-icon {
-width: 52px; height: 52px; border-radius: 14px;
-background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(0,212,170,0.2));
-border: 1px solid var(–border);
-display: flex; align-items: center; justify-content: center;
-font-size: 1.3rem;
-flex-shrink: 0;
-}
-.course-meta h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; }
-.course-meta p { font-size: 0.82rem; color: var(–text-dim); line-height: 1.5; }
-.course-badge {
-margin-right: auto;
-background: rgba(108,99,255,0.1);
-border: 1px solid rgba(108,99,255,0.25);
-color: var(–accent);
-font-size: 0.72rem;
-font-weight: 600;
-padding: 0.3rem 0.7rem;
-border-radius: 20px;
-font-family: ‘JetBrains Mono’, monospace;
-}
-
-.course-lessons { padding: 1rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
-.course-lesson-item {
-display: flex; align-items: center; gap: 0.75rem;
-padding: 0.7rem 0.85rem;
 border-radius: 10px;
-border: 1px solid var(–border);
-cursor: pointer;
-transition: all 0.15s;
+padding: 1rem;
+text-align: center;
 }
-.course-lesson-item:hover { background: var(–surface2); border-color: var(–accent); }
-.lesson-num {
-width: 26px; height: 26px; border-radius: 7px;
-background: var(–surface2);
-display: flex; align-items: center; justify-content: center;
-font-size: 0.72rem;
-font-weight: 700;
-color: var(–text-muted);
-flex-shrink: 0;
-font-family: ‘JetBrains Mono’, monospace;
-transition: all 0.15s;
-}
-.course-lesson-item:hover .lesson-num { background: var(–accent); color: white; }
-.course-lesson-title { font-size: 0.82rem; font-weight: 500; flex: 1; }
-.play-icon { color: var(–text-muted); font-size: 0.8rem; transition: color 0.15s; }
-.course-lesson-item:hover .play-icon { color: var(–accent); }
 
-/* ── LESSON PAGE ── */
-.lesson-page { display: flex; flex-direction: column; height: calc(100vh - 60px); }
-.lesson-top-bar {
-padding: 1.25rem 2rem;
-border-bottom: 1px solid var(–border);
-display: flex; align-items: center; gap: 1rem;
-background: var(–surface);
-}
-.back-btn {
-display: flex; align-items: center; gap: 0.5rem;
-background: none; border: none; cursor: pointer;
-font-family: inherit; font-size: 0.82rem;
-color: var(–text-dim);
-transition: color 0.15s;
-padding: 0.3rem 0.5rem;
-border-radius: 7px;
-}
-.back-btn:hover { color: var(–text); background: var(–surface2); }
-.lesson-breadcrumb {
-display: flex; align-items: center; gap: 0.5rem;
-font-size: 0.82rem;
-}
-.breadcrumb-series { color: var(–text-muted); }
-.breadcrumb-sep { color: var(–text-muted); }
-.breadcrumb-title { color: var(–text); font-weight: 500; }
-.complete-btn {
-margin-right: auto;
-display: flex; align-items: center; gap: 0.5rem;
-background: rgba(0,212,170,0.1);
-border: 1px solid rgba(0,212,170,0.25);
-color: var(–accent2);
-padding: 0.4rem 1rem;
-border-radius: 9px;
-font-family: inherit;
-font-size: 0.8rem;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.2s;
-}
-.complete-btn:hover { background: rgba(0,212,170,0.2); }
-.complete-btn.done { background: rgba(0,212,170,0.15); color: var(–accent2); }
+.stat-label { font-size: 0.75rem; color: var(–muted); margin-bottom: 0.3rem; }
+.stat-value { font-size: 1.5rem; font-weight: 900; }
+.stat-value.blue  { color: var(–accent); }
+.stat-value.green { color: var(–green); }
+.stat-value.gold  { color: var(–gold); }
 
-.lesson-content-area {
-flex: 1;
-overflow-y: auto;
-padding: 2rem;
-}
-.lesson-video {
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 16px;
+/* PROGRESS BAR */
+.progress-wrap {
+height: 8px;
+background: var(–border);
+border-radius: 4px;
 overflow: hidden;
-aspect-ratio: 16/9;
+margin-top: 1rem;
+}
+
+.progress-bar {
+height: 100%;
+border-radius: 4px;
+background: linear-gradient(90deg, var(–accent), var(–green));
+transition: width 0.4s ease;
+width: 0%;
+}
+
+/* KEY CONCEPTS */
+.concepts-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 1.2rem;
 margin-bottom: 2rem;
-display: flex; align-items: center; justify-content: center;
-position: relative;
 }
-.lesson-video img {
-width: 100%; height: 100%;
-object-fit: cover;
-filter: brightness(0.5) saturate(0.5);
-}
-.video-play-overlay {
-position: absolute; inset: 0;
-display: flex; flex-direction: column;
-align-items: center; justify-content: center; gap: 1rem;
-}
-.video-play-circle {
-width: 72px; height: 72px; border-radius: 50%;
-background: rgba(108,99,255,0.9);
-display: flex; align-items: center; justify-content: center;
-font-size: 1.5rem;
-cursor: pointer;
-transition: all 0.2s;
-box-shadow: 0 0 30px rgba(108,99,255,0.4);
-}
-.video-play-circle:hover { transform: scale(1.05); background: var(–accent); }
-.video-label { font-size: 0.8rem; color: rgba(232,232,240,0.6); font-family: ‘JetBrains Mono’, monospace; }
 
-.lesson-tabs {
-display: flex; gap: 0.25rem;
-margin-bottom: 1.5rem;
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 12px;
-padding: 4px;
-width: fit-content;
-}
-.lesson-tab {
-background: none; border: none; cursor: pointer;
-font-family: inherit; font-size: 0.82rem;
-font-weight: 500;
-color: var(–text-muted);
-padding: 0.45rem 1rem;
-border-radius: 9px;
-transition: all 0.15s;
-}
-.lesson-tab.active { background: var(–surface2); color: var(–text); }
-
-.lesson-text {
-line-height: 1.9;
-font-size: 0.9rem;
-color: var(–text-dim);
-max-width: 720px;
-}
-.lesson-text h3 {
-font-size: 1.1rem;
-font-weight: 700;
-color: var(–text);
-margin: 1.5rem 0 0.75rem;
-}
-.lesson-text p { margin-bottom: 1rem; }
-.lesson-text ul { padding-right: 1.25rem; margin-bottom: 1rem; }
-.lesson-text li { margin-bottom: 0.4rem; }
-.lesson-text strong { color: var(–text); font-weight: 600; }
-
-.code-block {
-background: var(–surface);
+.concept-card {
+background: var(–card);
 border: 1px solid var(–border);
 border-radius: 14px;
+padding: 1.5rem;
+position: relative;
 overflow: hidden;
-margin: 1rem 0;
+transition: transform 0.3s, border-color 0.3s;
 }
-.code-header {
-padding: 0.6rem 1rem;
-border-bottom: 1px solid var(–border);
-display: flex; align-items: center; justify-content: space-between;
-background: var(–surface2);
-}
-.code-lang {
-font-size: 0.7rem;
-font-weight: 600;
-color: var(–accent);
-font-family: ‘JetBrains Mono’, monospace;
-text-transform: uppercase;
-letter-spacing: 1px;
-}
-.copy-btn {
-background: none; border: 1px solid var(–border); cursor: pointer;
-font-family: ‘JetBrains Mono’, monospace; font-size: 0.68rem;
-color: var(–text-muted); padding: 0.25rem 0.6rem; border-radius: 6px;
-transition: all 0.15s;
-}
-.copy-btn:hover { border-color: var(–accent); color: var(–accent); }
-.code-body {
-padding: 1.25rem;
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.8rem;
-line-height: 1.7;
-color: #abb2bf;
-overflow-x: auto;
-}
-.code-body .kw { color: #c678dd; }
-.code-body .fn { color: #61afef; }
-.code-body .str { color: #98c379; }
-.code-body .cm { color: #5c6370; font-style: italic; }
-.code-body .num { color: #d19a66; }
 
-.comments-section { margin-top: 2rem; max-width: 720px; }
-.comments-title {
-font-size: 0.9rem; font-weight: 700;
-margin-bottom: 1rem;
-display: flex; align-items: center; gap: 0.6rem;
+.concept-card:hover {
+transform: translateY(-4px);
+border-color: var(–accent);
 }
-.comment-count {
-background: var(–surface2);
+
+.concept-card::before {
+content: ‘’;
+position: absolute;
+top: -30px; right: -30px;
+width: 100px; height: 100px;
+border-radius: 50%;
+opacity: 0.07;
+}
+
+.concept-card:nth-child(1)::before { background: var(–accent); }
+.concept-card:nth-child(2)::before { background: var(–gold); }
+.concept-card:nth-child(3)::before { background: var(–green); }
+.concept-card:nth-child(4)::before { background: var(–purple); }
+
+.concept-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+.concept-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; color: var(–text); }
+.concept-text { font-size: 0.82rem; color: var(–muted); line-height: 1.7; }
+
+/* QUIZ */
+.quiz-section {
+background: var(–card);
 border: 1px solid var(–border);
-border-radius: 5px;
-padding: 0.1rem 0.5rem;
-font-size: 0.7rem;
-font-family: ‘JetBrains Mono’, monospace;
-color: var(–text-muted);
-}
-.comment-form {
-display: flex; gap: 0.75rem;
-margin-bottom: 1.25rem;
-}
-.comment-input {
-flex: 1;
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 10px;
-padding: 0.6rem 1rem;
-font-family: inherit;
-font-size: 0.85rem;
-color: var(–text);
-outline: none;
-transition: border-color 0.2s;
-resize: none;
-}
-.comment-input:focus { border-color: var(–accent); }
-.send-btn {
-background: var(–accent);
-border: none; cursor: pointer;
-border-radius: 10px;
-padding: 0 1.25rem;
-color: white;
-font-family: inherit;
-font-size: 0.85rem;
-font-weight: 600;
-transition: all 0.2s;
-white-space: nowrap;
-}
-.send-btn:hover { background: #7d75ff; }
-
-.comment-item {
-display: flex; gap: 0.75rem;
-padding: 0.85rem 0;
-border-bottom: 1px solid var(–border);
-}
-.comment-avatar {
-width: 32px; height: 32px; border-radius: 8px;
-background: linear-gradient(135deg, var(–accent), var(–accent2));
-display: flex; align-items: center; justify-content: center;
-font-size: 0.8rem;
-font-weight: 700;
-color: white;
-flex-shrink: 0;
-}
-.comment-body .comment-author {
-font-size: 0.78rem; font-weight: 600;
-margin-bottom: 0.3rem;
-}
-.comment-body .comment-text { font-size: 0.82rem; color: var(–text-dim); line-height: 1.6; }
-.comment-body .comment-time { font-size: 0.7rem; color: var(–text-muted); margin-top: 0.25rem; font-family: ‘JetBrains Mono’, monospace; }
-
-/* ── ADMIN LOGIN ── */
-.admin-center {
-display: flex; align-items: center; justify-content: center;
-min-height: calc(100vh - 60px);
+border-radius: 16px;
 padding: 2rem;
+margin-bottom: 2rem;
 }
-.login-card {
+
+.quiz-question {
+font-size: 1.05rem;
+font-weight: 600;
+margin-bottom: 1.2rem;
+line-height: 1.6;
+}
+
+.quiz-options {
+display: grid;
+gap: 0.8rem;
+}
+
+.quiz-opt {
 background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 24px;
-padding: 2.5rem;
-width: 100%;
-max-width: 400px;
-}
-.login-icon {
-width: 52px; height: 52px; border-radius: 14px;
-background: linear-gradient(135deg, var(–accent), var(–accent2));
-display: flex; align-items: center; justify-content: center;
-font-size: 1.4rem;
-margin-bottom: 1.5rem;
-}
-.login-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.3px; }
-.login-sub { font-size: 0.85rem; color: var(–text-dim); margin-bottom: 2rem; }
-.form-field { margin-bottom: 1rem; }
-.form-label { font-size: 0.78rem; font-weight: 600; color: var(–text-dim); margin-bottom: 0.4rem; display: block; }
-.form-input {
-width: 100%;
-background: var(–surface2);
 border: 1px solid var(–border);
 border-radius: 10px;
-padding: 0.65rem 1rem;
-font-family: inherit;
+padding: 0.9rem 1.2rem;
+cursor: pointer;
+font-family: ‘Cairo’, sans-serif;
 font-size: 0.9rem;
 color: var(–text);
-outline: none;
-transition: border-color 0.2s;
+text-align: right;
+transition: all 0.25s;
 }
-.form-input:focus { border-color: var(–accent); }
-.login-submit {
-width: 100%;
-background: var(–accent);
-border: none; cursor: pointer;
-border-radius: 12px;
-padding: 0.8rem;
-font-family: inherit;
+
+.quiz-opt:hover { border-color: var(–accent); background: rgba(0,212,255,0.05); }
+.quiz-opt.correct { border-color: var(–green); background: rgba(0,255,136,0.08); color: var(–green); }
+.quiz-opt.wrong   { border-color: var(–red);   background: rgba(255,77,109,0.08); color: var(–red); }
+
+.quiz-feedback {
+margin-top: 1rem;
+padding: 1rem;
+border-radius: 10px;
 font-size: 0.9rem;
-font-weight: 700;
-color: white;
-margin-top: 0.5rem;
-transition: all 0.2s;
-}
-.login-submit:hover { background: #7d75ff; box-shadow: 0 6px 25px rgba(108,99,255,0.35); }
-
-/* ── TOAST ── */
-.toast {
-position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 12px;
-padding: 0.75rem 1.5rem;
-font-size: 0.85rem;
-display: flex; align-items: center; gap: 0.6rem;
-box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-z-index: 9998;
-animation: toast-in 0.3s ease;
-opacity: 0; pointer-events: none;
-transition: opacity 0.3s;
-}
-.toast.show { opacity: 1; pointer-events: auto; }
-@keyframes toast-in {
-from { transform: translateX(-50%) translateY(10px); opacity: 0; }
-to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
-}
-
-/* ── MOBILE ── */
-.mobile-nav-btn {
+line-height: 1.7;
 display: none;
-background: none; border: none; cursor: pointer;
-color: var(–text-dim); font-size: 1.1rem; padding: 0.3rem;
 }
-@media (max-width: 768px) {
-aside { display: none; position: fixed; z-index: 200; height: 100vh; top: 60px; }
-aside.open { display: block; }
-.mobile-nav-btn { display: flex; }
-.stats-row { grid-template-columns: 1fr; }
-.lessons-grid { grid-template-columns: 1fr; }
-.header-search { display: none; }
-.course-lessons { grid-template-columns: 1fr; }
-.home-hero { margin: 1rem; }
-.lessons-grid, .courses-list { padding: 0 1rem 1.5rem; }
-.stats-row { margin: 1rem; }
-.section-header { padding: 0 1rem; }
-.courses-header { padding: 1.5rem 1rem; }
-.lesson-content-area { padding: 1rem; }
-.lesson-top-bar { padding: 1rem; }
+
+.quiz-feedback.show { display: block; }
+.quiz-feedback.good { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.3); color: var(–green); }
+.quiz-feedback.bad  { background: rgba(255,77,109,0.08); border: 1px solid rgba(255,77,109,0.3); color: var(–red); }
+
+.divider {
+height: 1px;
+background: linear-gradient(to right, transparent, var(–border), transparent);
+margin: 2.5rem 0;
+}
+
+footer {
+text-align: center;
+padding: 2rem 0;
+color: var(–muted);
+font-size: 0.8rem;
+border-top: 1px solid var(–border);
+}
+
+@keyframes pulse {
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.1); }
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(10px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.5s ease forwards; }
+
+@media (max-width: 600px) {
+.analogy-grid { grid-template-columns: 1fr; }
+.arrow-divider { transform: rotate(90deg); }
+.train-stats { grid-template-columns: 1fr 1fr; }
 }
 </style>
 
 </head>
 <body>
 
-<!-- HEADER -->
+<div class="container">
 
-<header>
-  <button class="mobile-nav-btn" onclick="toggleSidebar()" title="القائمة">☰</button>
-  <a class="logo" onclick="navigate('home')">
-    <div class="logo-mark">MX</div>
-    <div class="logo-text">أكاديمية MAX</div>
-  </a>
-  <nav>
-    <button id="nav-home" class="active" onclick="navigate('home')">الرئيسية</button>
-    <button id="nav-courses" onclick="navigate('courses')">الدورات</button>
-  </nav>
-  <div class="header-search">
-    <span class="search-icon">🔍</span>
-    <input type="text" placeholder="ابحث عن درس أو موضوع..." id="searchInput" oninput="handleSearch(this.value)" />
-    <div class="search-dropdown" id="searchDropdown"></div>
+  <!-- HEADER -->
+
+  <header>
+    <div class="badge">🤖 أكاديمية تدريب الروبوت الافتراضي</div>
+    <h1>ما هي البارامترات<br>في الذكاء الاصطناعي؟</h1>
+    <p class="subtitle">
+      تعلّم بالتجربة! استكشف معنى البارامترات من خلال تشبيهات بصرية ومحاكاة تفاعلية
+    </p>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- KEY CONCEPTS -->
+
+  <div class="section-title">💡 المفاهيم الأساسية</div>
+  <div class="concepts-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔢</div>
+      <div class="concept-title">ما هو البارامتر؟</div>
+      <div class="concept-text">رقم يُخزَّن داخل النموذج ويتغير أثناء التدريب. النموذج الكبير يحتوي على مليارات من هذه الأرقام!</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🧠</div>
+      <div class="concept-title">الأوزان (Weights)</div>
+      <div class="concept-text">أهم نوع من البارامترات. تحدد قوة الاتصال بين الخلايا العصبية، مثل قوة الذاكرة في الدماغ.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📚</div>
+      <div class="concept-title">التدريب (Training)</div>
+      <div class="concept-text">العملية التي يتعلم فيها النموذج عبر ضبط البارامترات تلقائياً حتى يُجيب بشكل صحيح.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚖️</div>
+      <div class="concept-title">كثير = أذكى؟</div>
+      <div class="concept-text">ليس دائماً! البارامترات الكثيرة تعطي قدرة أكبر، لكن تحتاج بيانات ووقت تدريب أكثر.</div>
+    </div>
   </div>
-  <button class="admin-btn" onclick="navigate('admin')">⚙ لوحة التحكم</button>
-</header>
 
-<div class="app-body">
+  <!-- ANALOGY -->
 
-  <!-- SIDEBAR -->
+  <div class="section-title">👨‍🍳 التشبيه: الطباخ ووصفة الطبخ</div>
+  <div class="analogy-card">
+    <p style="color:var(--muted); line-height:1.8; font-size:0.95rem;">
+      تخيّل أنك طباخ تريد تعلّم طبخ الكنافة 🍮 — البارامترات هي <strong style="color:var(--gold)">مقادير الوصفة</strong>:
+      كم ملعقة سكر، كم غرام جبنة، كم دقيقة في الفرن... في البداية تخمّن المقادير، وبعد كل محاولة تعدّل حتى تصير مثالية!
+    </p>
+    <div class="analogy-grid">
+      <div class="analogy-box">
+        <div class="emoji">🤖</div>
+        <div class="label">الذكاء الاصطناعي</div>
+        <div class="value">نموذج GPT</div>
+      </div>
+      <div class="arrow-divider">⟷</div>
+      <div class="analogy-box">
+        <div class="emoji">👨‍🍳</div>
+        <div class="label">التشبيه</div>
+        <div class="value">طباخ محترف</div>
+      </div>
+      <div class="analogy-box">
+        <div class="emoji">🔢</div>
+        <div class="label">الذكاء الاصطناعي</div>
+        <div class="value">البارامترات</div>
+      </div>
+      <div class="arrow-divider">⟷</div>
+      <div class="analogy-box">
+        <div class="emoji">📝</div>
+        <div class="label">التشبيه</div>
+        <div class="value">مقادير الوصفة</div>
+      </div>
+      <div class="analogy-box">
+        <div class="emoji">🎯</div>
+        <div class="label">الذكاء الاصطناعي</div>
+        <div class="value">التدريب</div>
+      </div>
+      <div class="arrow-divider">⟷</div>
+      <div class="analogy-box">
+        <div class="emoji">🍽️</div>
+        <div class="label">التشبيه</div>
+        <div class="value">تعديل الوصفة بالتجربة</div>
+      </div>
+    </div>
+  </div>
 
-  <aside id="sidebar">
-    <div id="sidebarContent"></div>
-  </aside>
+  <!-- COOK SIMULATOR -->
 
-  <!-- MAIN -->
-
-  <main>
+  <div class="section-title">🎮 محاكي الطباخ — العب بالبارامترات!</div>
+  <div class="cook-section">
+    <p class="cook-desc">
+      حرّك المتزلجات (Sliders) لتغيير قيم البارامترات وشاهد كيف تؤثر على نتيجة الطبخة!
+      هذا بالضبط ما يفعله الذكاء الاصطناعي أثناء التدريب — يعدّل الأرقام حتى يصل للنتيجة الصحيحة.
+    </p>
 
 ```
-<!-- HOME PAGE -->
-<div class="page active" id="page-home">
-  <div class="home-hero">
-    <img class="hero-img" src="https://picsum.photos/seed/academy2026/1200/500" alt="Academy Hero" referrerpolicy="no-referrer" />
-    <div class="hero-overlay">
-      <div class="hero-eyebrow">DR. MAX MOUSA — أكاديمية البرمجة والذكاء الاصطناعي</div>
-      <h1 class="hero-title">تعلّم البرمجة<br>والذكاء الاصطناعي</h1>
-      <p class="hero-sub">دورات تعليمية عربية متخصصة في التعلم العميق، الشبكات العصبية، وتطبيقات الذكاء الاصطناعي الحديثة.</p>
-      <button class="hero-cta" onclick="navigate('courses')">ابدأ التعلم الآن ←</button>
+<div class="params-grid">
+  <div class="param-control">
+    <div class="param-header">
+      <div class="param-name">🍬 السكر</div>
+      <div class="param-val" id="sugar-val">50</div>
     </div>
+    <div class="param-desc">بارامتر الحلاوة — منخفض = مالح، مرتفع = حلو جداً</div>
+    <input type="range" min="0" max="100" value="50" id="sugar" oninput="updateCook()">
   </div>
 
-  <div class="stats-row" id="statsRow"></div>
-
-  <div class="section-header" style="margin-top:1.5rem;">
-    <div class="section-bar"></div>
-    <h2 class="section-title">أحدث الدروس</h2>
-  </div>
-  <div class="lessons-grid" id="latestLessonsGrid"></div>
-</div>
-
-<!-- COURSES PAGE -->
-<div class="page" id="page-courses">
-  <div class="courses-header">
-    <h1>الدورات التعليمية</h1>
-    <p>تصفح جميع السلاسل التعليمية في الأكاديمية وابدأ مسيرتك في تعلم البرمجة والذكاء الاصطناعي.</p>
-  </div>
-  <div class="courses-list" id="coursesList"></div>
-</div>
-
-<!-- LESSON PAGE -->
-<div class="page" id="page-lesson">
-  <div class="lesson-page">
-    <div class="lesson-top-bar">
-      <button class="back-btn" id="backBtn">← رجوع</button>
-      <div class="lesson-breadcrumb">
-        <span class="breadcrumb-series" id="breadcrumbSeries"></span>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-title" id="breadcrumbTitle"></span>
-      </div>
-      <button class="complete-btn" id="completeBtn" onclick="markComplete()">✓ وضع علامة مكتمل</button>
+  <div class="param-control">
+    <div class="param-header">
+      <div class="param-name">🔥 الحرارة</div>
+      <div class="param-val" id="heat-val">60</div>
     </div>
-    <div class="lesson-content-area">
-      <div class="lesson-video" id="lessonVideo"></div>
-      <div class="lesson-tabs">
-        <button class="lesson-tab active" onclick="switchTab('content',this)">📄 المحتوى</button>
-        <button class="lesson-tab" onclick="switchTab('code',this)">💻 الكود</button>
-        <button class="lesson-tab" onclick="switchTab('comments',this)">💬 التعليقات</button>
-      </div>
-      <div id="tabContent"></div>
+    <div class="param-desc">بارامتر درجة الحرارة — منخفض = نيء، مرتفع = محروق</div>
+    <input type="range" min="0" max="100" value="60" id="heat" oninput="updateCook()">
+  </div>
+
+  <div class="param-control">
+    <div class="param-header">
+      <div class="param-name">⏱️ الوقت</div>
+      <div class="param-val" id="time-val">55</div>
     </div>
+    <div class="param-desc">بارامتر مدة الطبخ — منخفض = غير مطبوخ، مرتفع = جاف</div>
+    <input type="range" min="0" max="100" value="55" id="time" oninput="updateCook()">
+  </div>
+
+  <div class="param-control">
+    <div class="param-header">
+      <div class="param-name">🧀 الجبنة</div>
+      <div class="param-val" id="cheese-val">45</div>
+    </div>
+    <div class="param-desc">بارامتر كمية الجبنة — منخفض = جاف، مرتفع = دسم جداً</div>
+    <input type="range" min="0" max="100" value="45" id="cheese" oninput="updateCook()">
   </div>
 </div>
 
-<!-- ADMIN PAGE -->
-<div class="page" id="page-admin">
-  <div class="admin-center">
-    <div class="login-card">
-      <div class="login-icon">🔐</div>
-      <h2 class="login-title">لوحة التحكم</h2>
-      <p class="login-sub">أدخل بياناتك للوصول إلى إدارة الأكاديمية</p>
-      <div class="form-field">
-        <label class="form-label">اسم المستخدم</label>
-        <input type="text" class="form-input" placeholder="admin" />
-      </div>
-      <div class="form-field">
-        <label class="form-label">كلمة المرور</label>
-        <input type="password" class="form-input" placeholder="••••••••" />
-      </div>
-      <button class="login-submit" onclick="showToast('تم تسجيل الدخول بنجاح ✓')">تسجيل الدخول</button>
-    </div>
-  </div>
+<!-- OUTPUT -->
+<div class="food-output" id="food-output">
+  <span class="food-emoji" id="food-emoji">🍮</span>
+  <div class="food-name" id="food-name">كنافة مثالية!</div>
+  <div id="food-desc" style="color:var(--muted);font-size:0.85rem;margin-top:0.4rem;">حرّك المتزلجات لتغيير البارامترات</div>
+  <div class="food-score score-good" id="food-score">⭐ ممتاز</div>
 </div>
 ```
 
-  </main>
+  </div>
+
+  <!-- TRAINING SIMULATOR -->
+
+  <div class="section-title">⚙️ محاكي التدريب — شاهد الأوزان تتعدّل تلقائياً!</div>
+  <div class="train-section">
+    <p class="train-desc">
+      اضغط <strong style="color:var(--accent)">"ابدأ التدريب"</strong> وشاهد كيف تبدأ البارامترات (الأوزان) من قيم <strong style="color:var(--red)">عشوائية خاطئة</strong>،
+      ثم تُعدَّل تلقائياً مع كل جولة تدريب حتى تصل إلى <strong style="color:var(--green)">القيم المثالية</strong> — تماماً كما يفعل الذكاء الاصطناعي! 🧠
+    </p>
+
+```
+<!-- TARGET VALUES HINT -->
+<div style="background:rgba(0,255,136,0.05); border:1px solid rgba(0,255,136,0.2); border-radius:10px; padding:1rem; margin-bottom:1.2rem; font-size:0.82rem; color:var(--muted);">
+  🎯 <strong style="color:var(--green)">القيم المثالية للوصفة:</strong>
+  السكر = <strong style="color:var(--gold)">55</strong> &nbsp;|&nbsp;
+  الحرارة = <strong style="color:var(--gold)">65</strong> &nbsp;|&nbsp;
+  الوقت = <strong style="color:var(--gold)">60</strong> &nbsp;|&nbsp;
+  الجبنة = <strong style="color:var(--gold)">50</strong>
 </div>
 
-<!-- TOAST -->
+<!-- TRAINING SLIDERS (read-only display) -->
+<div class="params-grid" id="train-params-grid">
+  <div class="param-control" id="tc-sugar">
+    <div class="param-header">
+      <div class="param-name">🍬 السكر</div>
+      <div class="param-val" id="t-sugar-val" style="color:var(--red)">—</div>
+    </div>
+    <div class="param-desc" id="t-sugar-desc">في انتظار التدريب...</div>
+    <input type="range" min="0" max="100" value="0" id="t-sugar" disabled style="opacity:0.5;">
+    <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);margin-top:4px;">
+      <span>0</span><span style="color:var(--green)">🎯 55</span><span>100</span>
+    </div>
+  </div>
 
-<div class="toast" id="toast"></div>
+  <div class="param-control" id="tc-heat">
+    <div class="param-header">
+      <div class="param-name">🔥 الحرارة</div>
+      <div class="param-val" id="t-heat-val" style="color:var(--red)">—</div>
+    </div>
+    <div class="param-desc" id="t-heat-desc">في انتظار التدريب...</div>
+    <input type="range" min="0" max="100" value="0" id="t-heat" disabled style="opacity:0.5;">
+    <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);margin-top:4px;">
+      <span>0</span><span style="color:var(--green)">🎯 65</span><span>100</span>
+    </div>
+  </div>
+
+  <div class="param-control" id="tc-time">
+    <div class="param-header">
+      <div class="param-name">⏱️ الوقت</div>
+      <div class="param-val" id="t-time-val" style="color:var(--red)">—</div>
+    </div>
+    <div class="param-desc" id="t-time-desc">في انتظار التدريب...</div>
+    <input type="range" min="0" max="100" value="0" id="t-time" disabled style="opacity:0.5;">
+    <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);margin-top:4px;">
+      <span>0</span><span style="color:var(--green)">🎯 60</span><span>100</span>
+    </div>
+  </div>
+
+  <div class="param-control" id="tc-cheese">
+    <div class="param-header">
+      <div class="param-name">🧀 الجبنة</div>
+      <div class="param-val" id="t-cheese-val" style="color:var(--red)">—</div>
+    </div>
+    <div class="param-desc" id="t-cheese-desc">في انتظار التدريب...</div>
+    <input type="range" min="0" max="100" value="0" id="t-cheese" disabled style="opacity:0.5;">
+    <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);margin-top:4px;">
+      <span>0</span><span style="color:var(--green)">🎯 50</span><span>100</span>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT DURING TRAINING -->
+<div class="food-output" id="train-food-output" style="margin-bottom:1.2rem;">
+  <span class="food-emoji" id="train-food-emoji">⏳</span>
+  <div class="food-name" id="train-food-name">اضغط "ابدأ التدريب" لترى كيف تتعدّل الأوزان</div>
+  <div class="food-score score-mid" id="train-food-score">⏳ لم يبدأ بعد</div>
+</div>
+
+<div class="train-controls">
+  <button class="btn btn-primary" id="train-btn" onclick="startTraining()">▶ ابدأ التدريب</button>
+  <button class="btn btn-secondary" onclick="resetTraining()">↺ إعادة تعيين</button>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar" id="progress-bar"></div>
+</div>
+
+<div class="train-stats">
+  <div class="stat-box">
+    <div class="stat-label">جولة التدريب (Epoch)</div>
+    <div class="stat-value blue" id="epoch-count">0 / 8</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-label">متوسط الخطأ</div>
+    <div class="stat-value" id="error-val" style="color:var(--red)">—</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-label">دقة النموذج</div>
+    <div class="stat-value gold" id="accuracy">0%</div>
+  </div>
+</div>
+
+<div id="train-log" style="margin-top:1rem; padding:1rem; background:var(--surface); border-radius:10px; border:1px solid var(--border); font-size:0.8rem; color:var(--muted); min-height:50px; line-height:2;"></div>
+```
+
+  </div>
+
+  <!-- QUIZ -->
+
+  <div class="section-title">🧩 اختبر نفسك!</div>
+  <div class="quiz-section">
+    <div class="quiz-question" id="q-text">سؤال 1 من 3: ما الذي يمثله البارامتر في نموذج الذكاء الاصطناعي؟</div>
+    <div class="quiz-options" id="q-options"></div>
+    <div class="quiz-feedback" id="q-feedback"></div>
+    <div style="margin-top:1.2rem; display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:0.8rem; color:var(--muted);" id="q-progress">السؤال 1 / 3</div>
+      <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" style="display:none;">التالي ←</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <footer>
+    🤖 أكاديمية تدريب الروبوت الافتراضي | Dr. MAX Mousa
+  </footer>
+</div>
 
 <script>
-/* ═══════════════ DATA ═══════════════ */
-const DATA = {
-  stats: { lessons: '48+', users: '1,200+', completions: '3,500+' },
-  series: [
-    {
-      id: 1, title: 'أساسيات التعلم العميق',
-      desc: 'رحلة شاملة من الصفر إلى التطبيق في الشبكات العصبية والتعلم العميق',
-      icon: '🧠', color: '#6c63ff',
-      lessons: [
-        { id: 1, title: 'مقدمة في الشبكات العصبية', slug: 'intro-nn', mins: 22 },
-        { id: 2, title: 'دالة الخطأ وخوارزمية الانتشار الخلفي', slug: 'backprop', mins: 35 },
-        { id: 3, title: 'طبقات التنشيط: ReLU وSigmoid', slug: 'activations', mins: 18 },
-        { id: 4, title: 'تحسين النماذج: Adam وSGD', slug: 'optimizers', mins: 28 },
-      ]
-    },
-    {
-      id: 2, title: 'الشبكات العصبية التلافيفية (CNN)',
-      desc: 'فهم معمّق لعمليات الـ Convolution والـ Pooling وتطبيقات رؤية الحاسوب',
-      icon: '👁', color: '#00d4aa',
-      lessons: [
-        { id: 5, title: 'مبدأ عمل الـ Convolution', slug: 'conv-basics', mins: 30 },
-        { id: 6, title: 'استراتيجيات الـ Padding', slug: 'padding', mins: 20 },
-        { id: 7, title: 'طبقات الـ Pooling وتقليص الأبعاد', slug: 'pooling', mins: 25 },
-        { id: 8, title: 'بناء CNN كامل من الصفر', slug: 'build-cnn', mins: 45 },
-      ]
-    },
-    {
-      id: 3, title: 'محولات الرؤية (Vision Transformer)',
-      desc: 'معمارية ViT وكيفية ضبط النماذج المُدرَّبة مسبقاً على بيانات مخصصة',
-      icon: '⚡', color: '#ff6b6b',
-      lessons: [
-        { id: 9, title: 'من CNN إلى Transformer: الفلسفة', slug: 'cnn-to-vit', mins: 28 },
-        { id: 10, title: 'آلية الانتباه (Attention Mechanism)', slug: 'attention', mins: 40 },
-        { id: 11, title: 'Fine-tuning ViT مع Hugging Face', slug: 'vit-finetune', mins: 50 },
-        { id: 12, title: 'نشر النموذج وكتابة سكريبت الاستنتاج', slug: 'inference', mins: 35 },
-      ]
-    },
-    {
-      id: 4, title: 'الشبكات التكرارية: RNN و LSTM و GRU',
-      desc: 'معالجة التسلسلات الزمنية والنصوص باستخدام الشبكات التكرارية الحديثة',
-      icon: '🔄', color: '#f59e0b',
-      lessons: [
-        { id: 13, title: 'مشكلة التتابع وحلول RNN', slug: 'rnn-intro', mins: 22 },
-        { id: 14, title: 'LSTM: البوابات والذاكرة الطويلة', slug: 'lstm', mins: 38 },
-        { id: 15, title: 'GRU: البديل الأكثر كفاءة', slug: 'gru', mins: 30 },
-        { id: 16, title: 'مقارنة RNN vs LSTM vs GRU', slug: 'rnn-compare', mins: 25 },
-      ]
+// ===== COOK SIMULATOR =====
+function updateCook() {
+  const sugar  = +document.getElementById('sugar').value;
+  const heat   = +document.getElementById('heat').value;
+  const time   = +document.getElementById('time').value;
+  const cheese = +document.getElementById('cheese').value;
+
+  document.getElementById('sugar-val').textContent  = sugar;
+  document.getElementById('heat-val').textContent   = heat;
+  document.getElementById('time-val').textContent   = time;
+  document.getElementById('cheese-val').textContent = cheese;
+
+  // score calculation
+  const sugarScore  = 100 - Math.abs(sugar  - 55) * 2;
+  const heatScore   = 100 - Math.abs(heat   - 65) * 2;
+  const timeScore   = 100 - Math.abs(time   - 60) * 2;
+  const cheeseScore = 100 - Math.abs(cheese - 50) * 2;
+  const total = (sugarScore + heatScore + timeScore + cheeseScore) / 4;
+
+  const emoji   = document.getElementById('food-emoji');
+  const name    = document.getElementById('food-name');
+  const desc    = document.getElementById('food-desc');
+  const score   = document.getElementById('food-score');
+
+  if (total >= 75) {
+    emoji.textContent = '🍮';
+    name.textContent  = 'كنافة مثالية! 🎉';
+    desc.textContent  = 'البارامترات في قيمها المثالية — هكذا يعمل النموذج المُدرَّب بشكل صيح!';
+    score.className   = 'food-score score-good';
+    score.textContent = '⭐ ممتاز ' + Math.round(total) + '%';
+  } else if (total >= 45) {
+    if (heat > 80) {
+      emoji.textContent = '🔥'; name.textContent = 'محروقة!';
+      desc.textContent = 'بارامتر الحرارة مرتفع جداً — النموذج "بالغ" في التدريب (Overfitting)';
+    } else if (heat < 30) {
+      emoji.textContent = '🥩'; name.textContent = 'غير مطبوخة!';
+      desc.textContent = 'بارامتر الحرارة منخفض — النموذج لم يتدرب كافياً (Underfitting)';
+    } else if (sugar > 80) {
+      emoji.textContent = '😵'; name.textContent = 'حلوة جداً!';
+      desc.textContent = 'بارامتر السكر مرتفع — القيمة خرجت عن النطاق الصحيح';
+    } else {
+      emoji.textContent = '😐'; name.textContent = 'مقبولة...';
+      desc.textContent = 'بعض البارامترات تحتاج ضبط — حاول تعديلها أكثر!';
     }
-  ]
-};
+    score.className   = 'food-score score-mid';
+    score.textContent = '⚡ متوسط ' + Math.round(total) + '%';
+  } else {
+    emoji.textContent = '🗑️';
+    name.textContent  = 'فاشلة تماماً!';
+    desc.textContent  = 'البارامترات بعيدة جداً عن القيم الصحيحة — هكذا يكون النموذج قبل التدريب';
+    score.className   = 'food-score score-bad';
+    score.textContent = '❌ ضعيف ' + Math.round(total) + '%';
+  }
+}
+updateCook();
 
-/* Flatten lessons */
-const allLessons = DATA.series.flatMap(s => s.lessons.map(l => ({ ...l, seriesId: s.id, seriesTitle: s.title })));
+// ===== TRAINING SIMULATOR =====
+// Target (ideal) values for each parameter
+const TARGETS = { sugar: 55, heat: 65, time: 60, cheese: 50 };
+const EPOCHS  = 8;
+const PARAMS  = ['sugar', 'heat', 'time', 'cheese'];
 
-/* ═══════════════ STATE ═══════════════ */
-let currentPage = 'home';
-let currentLessonSlug = null;
-let completedLessons = new Set();
-let currentTab = 'content';
-let sidebarOpen = false;
+let trainingInterval = null;
+let currentEpoch = 0;
+// Current weights — start random
+let weights = { sugar: 0, heat: 0, time: 0, cheese: 0 };
 
-/* ═══════════════ INIT ═══════════════ */
-window.onload = () => {
-  renderStats();
-  renderLatestLessons();
-  renderCoursesList();
-  renderSidebar();
-};
+function randomInit() {
+  // Start from random values far from target
+  PARAMS.forEach(p => {
+    let rand;
+    do { rand = Math.floor(Math.random() * 101); }
+    while (Math.abs(rand - TARGETS[p]) < 20); // ensure it starts wrong
+    weights[p] = rand;
+  });
+}
 
-/* ═══════════════ NAVIGATE ═══════════════ */
-function navigate(page, slug) {
-  currentPage = page;
+function calcError() {
+  const total = PARAMS.reduce((sum, p) => sum + Math.abs(weights[p] - TARGETS[p]), 0);
+  return Math.round(total / PARAMS.length);
+}
 
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
+function calcAccuracy() {
+  const err = calcError();
+  return Math.max(0, Math.round(100 - err * 2));
+}
 
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  if (page === 'home') document.getElementById('nav-home').classList.add('active');
-  if (page === 'courses') document.getElementById('nav-courses').classList.add('active');
+function getParamColor(val, target) {
+  const diff = Math.abs(val - target);
+  if (diff <= 3)  return 'var(--green)';
+  if (diff <= 12) return 'var(--gold)';
+  return 'var(--red)';
+}
 
-  if (page === 'lesson' && slug) {
-    currentLessonSlug = slug;
-    renderLesson(slug);
-    renderSidebar(slug);
+function getParamDesc(name, val, target) {
+  const diff = val - target;
+  const absDiff = Math.abs(diff);
+  if (absDiff <= 3) return '✅ وصل للقيمة المثالية!';
+  const dir = diff > 0 ? 'مرتفع' : 'منخفض';
+  if (absDiff <= 15) return `⚡ قريب جداً — لا يزال ${dir} بمقدار ${absDiff}`;
+  return `❌ بعيد عن الهدف — ${dir} بمقدار ${absDiff}`;
+}
+
+function updateTrainUI() {
+  PARAMS.forEach(p => {
+    const val = Math.round(weights[p]);
+    const slider = document.getElementById('t-' + p);
+    const valEl  = document.getElementById('t-' + p + '-val');
+    const descEl = document.getElementById('t-' + p + '-desc');
+    const card   = document.getElementById('tc-' + p);
+
+    slider.value = val;
+    valEl.textContent = val;
+    valEl.style.color = getParamColor(val, TARGETS[p]);
+    descEl.textContent = getParamDesc(p, val, TARGETS[p]);
+
+    const diff = Math.abs(val - TARGETS[p]);
+    card.style.borderColor = diff <= 3 ? 'var(--green)' : diff <= 15 ? 'rgba(255,215,0,0.4)' : 'var(--border)';
+  });
+
+  const err = calcError();
+  const acc = calcAccuracy();
+  document.getElementById('error-val').textContent  = err;
+  document.getElementById('error-val').style.color  = err <= 5 ? 'var(--green)' : err <= 20 ? 'var(--gold)' : 'var(--red)';
+  document.getElementById('accuracy').textContent   = acc + '%';
+  document.getElementById('epoch-count').textContent = currentEpoch + ' / ' + EPOCHS;
+  document.getElementById('progress-bar').style.width = Math.round(currentEpoch / EPOCHS * 100) + '%';
+
+  // Update mini result
+  const emoji = document.getElementById('train-food-emoji');
+  const name  = document.getElementById('train-food-name');
+  const score = document.getElementById('train-food-score');
+
+  if (acc >= 80) {
+    emoji.textContent = '🍮'; name.textContent = 'كنافة مثالية!';
+    score.className = 'food-score score-good'; score.textContent = '⭐ ممتاز ' + acc + '%';
+  } else if (acc >= 45) {
+    emoji.textContent = '😐'; name.textContent = 'مقبولة — التدريب مستمر...';
+    score.className = 'food-score score-mid'; score.textContent = '⚡ ' + acc + '%';
+  } else {
+    emoji.textContent = '🗑️'; name.textContent = 'خاطئة — الأوزان بعيدة';
+    score.className = 'food-score score-bad'; score.textContent = '❌ ' + acc + '%';
+  }
+}
+
+function resetTraining() {
+  if (trainingInterval) { clearInterval(trainingInterval); trainingInterval = null; }
+  document.getElementById('train-btn').disabled = false;
+  currentEpoch = 0;
+  PARAMS.forEach(p => {
+    weights[p] = 0;
+    document.getElementById('t-' + p).value = 0;
+    document.getElementById('t-' + p + '-val').textContent = '—';
+    document.getElementById('t-' + p + '-val').style.color = 'var(--red)';
+    document.getElementById('t-' + p + '-desc').textContent = 'في انتظار التدريب...';
+    document.getElementById('tc-' + p).style.borderColor = 'var(--border)';
+  });
+  document.getElementById('accuracy').textContent  = '0%';
+  document.getElementById('epoch-count').textContent = '0 / ' + EPOCHS;
+  document.getElementById('error-val').textContent = '—';
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('train-log').innerHTML = '';
+  document.getElementById('train-food-emoji').textContent = '⏳';
+  document.getElementById('train-food-name').textContent = 'اضغط "ابدأ التدريب" لترى كيف تتعدّل الأوزان';
+  document.getElementById('train-food-score').textContent = '⏳ لم يبدأ بعد';
+  document.getElementById('train-food-score').className = 'food-score score-mid';
+}
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+function startTraining() {
+  if (trainingInterval) return;
+  document.getElementById('train-btn').disabled = true;
+
+  // Initialize random weights
+  randomInit();
+  currentEpoch = 0;
+  document.getElementById('train-log').innerHTML = '';
+
+  const epochLogs = [
+    '🎲 تهيئة الأوزان بقيم عشوائية — النموذج لا يعرف شيئاً بعد!',
+    '📉 جولة #1 — حساب الخطأ وتعديل الأوزان...',
+    '📉 جولة #2 — الأوزان تتحرك نحو القيم الصحيحة...',
+    '📈 جولة #3 — الخطأ يتناقص! الأوزان تتحسن...',
+    '📈 جولة #4 — النموذج يتعلم الوصفة...',
+    '🔧 جولة #5 — ضبط دقيق للبارامترات...',
+    '🔧 جولة #6 — اقتراب من القيم المثالية...',
+    '✨ جولة #7 — الأوزان تستقر...',
+    '🏆 جولة #8 — التدريب اكتمل! الأوزان وصلت للقيم المثالية!'
+  ];
+
+  // Show initial random state
+  updateTrainUI();
+  const log = document.getElementById('train-log');
+  log.innerHTML = epochLogs[0] + '<br>';
+
+  let step = 0;
+  trainingInterval = setInterval(() => {
+    step++;
+    currentEpoch = step;
+
+    // Each epoch: move weights ~70% closer to target (simulating gradient descent)
+    const learningRate = 0.45 + step * 0.05; // gets faster each epoch
+    PARAMS.forEach(p => {
+      const noise = (Math.random() - 0.5) * 4; // small realistic noise
+      weights[p] = lerp(weights[p], TARGETS[p], learningRate * 0.3) + (step < EPOCHS ? noise : 0);
+      weights[p] = Math.max(0, Math.min(100, weights[p]));
+    });
+
+    // On last epoch: snap to exact target
+    if (step >= EPOCHS) {
+      PARAMS.forEach(p => { weights[p] = TARGETS[p]; });
+    }
+
+    updateTrainUI();
+
+    log.innerHTML += epochLogs[Math.min(step, epochLogs.length - 1)] + '<br>';
+    log.scrollTop = log.scrollHeight;
+
+    if (step >= EPOCHS) {
+      clearInterval(trainingInterval);
+      trainingInterval = null;
+      document.getElementById('train-btn').disabled = false;
+      log.innerHTML += '<br>🎉 <strong style="color:var(--gold)">تم ضبط جميع البارامترات بنجاح! الكنافة مثالية الآن 🍮</strong>';
+    }
+  }, 900);
+}
+
+// ===== QUIZ =====
+const questions = [
+  {
+    q: 'سؤال 1 من 3: ما الذي يمثله البارامتر في نموذج الذكاء الاصطناعي؟',
+    opts: ['خطوات البرمجة', 'أرقام تُعدَّل أثناء التدريب لتحسين الأداء', 'نوع لغة البرمجة', 'سرعة المعالج'],
+    correct: 1,
+    fb: '✅ صحيح! البارامتر هو رقم يتم ضبطه تلقائياً أثناء التدريب حتى يتعلم النموذج الإجابة الصحيحة.',
+    fb_wrong: '❌ ليس صحيحاً. البارامترات هي أرقام داخل النموذج تتغير أثناء التدريب — مثل مقادير الوصفة!'
+  },
+  {
+    q: 'سؤال 2 من 3: نموذج بـ 5 مليار بارامتر مقابل نموذج بـ 1 مليون — ما الفرق؟',
+    opts: ['النموذج الأكبر دائماً أبطأ ولا فائدة منه', 'الأرقام لا تعني شيئاً', 'النموذج الأكبر قادر على تعلّم أنماط أكثر تعقيداً', 'النموذج الأصغر دائماً أفضل'],
+    correct: 2,
+    fb: '✅ ممتاز! البارامترات الأكثر = قدرة أكبر على فهم أنماط معقدة، لكن تحتاج تدريباً أطول وموارد أكثر.',
+    fb_wrong: '❌ ليس صحيحاً. النموذج الأكبر يمتلك قدرة أعلى لأن لديه مساحة أكبر "لحفظ" الأنماط.'
+  },
+  {
+    q: 'سؤال 3 من 3: في تشبيه الطباخ، ماذا يمثل "تعديل الوصفة بعد كل تجربة"؟',
+    opts: ['الاستنتاج (Inference)', 'التدريب (Training)', 'قاعدة البيانات', 'واجهة المستخدم'],
+    correct: 1,
+    fb: '🎉 رائع! التدريب هو عملية تعديل البارامترات تلقائياً بعد كل مثال، تماماً كالطباخ الذي يعدّل مقادير وصفته.',
+    fb_wrong: '❌ ليس تماماً. "تعديل الوصفة بعد كل تجربة" يشبه عملية التدريب (Training) حيث تتغير قيم البارامترات.'
+  }
+];
+
+let currentQ = 0;
+let answered = false;
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-progress').textContent = 'السؤال ' + (currentQ + 1) + ' / ' + questions.length;
+  document.getElementById('q-feedback').className = 'quiz-feedback';
+  document.getElementById('q-feedback').textContent = '';
+  document.getElementById('next-btn').style.display = 'none';
+  answered = false;
+
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  q.opts.forEach((text, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = text;
+    btn.onclick = () => answer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function answer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[currentQ];
+  const opts = document.querySelectorAll('.quiz-opt');
+  const fb = document.getElementById('q-feedback');
+
+  opts[q.correct].classList.add('correct');
+  if (idx !== q.correct) opts[idx].classList.add('wrong');
+  opts.forEach(o => o.onclick = null);
+
+  if (idx === q.correct) {
+    fb.textContent = q.fb;
+    fb.className = 'quiz-feedback show good';
+  } else {
+    fb.textContent = q.fb_wrong;
+    fb.className = 'quiz-feedback show bad';
   }
 
-  closeSidebar();
+  if (currentQ < questions.length - 1) {
+    document.getElementById('next-btn').style.display = 'flex';
+  } else {
+    document.getElementById('next-btn').style.display = 'flex';
+    document.getElementById('next-btn').textContent = '🎉 انتهى!';
+    document.getElementById('next-btn').onclick = () => {
+      document.getElementById('q-text').textContent = '🏆 أحسنت! أكملت الاختبار. البارامترات هي قلب الذكاء الاصطناعي!';
+      document.getElementById('q-options').innerHTML = '';
+      document.getElementById('q-feedback').className = 'quiz-feedback';
+      document.getElementById('next-btn').style.display = 'none';
+      document.getElementById('q-progress').textContent = 'انتهى الاختبار ✅';
+    };
+  }
 }
 
-/* ═══════════════ STATS ═══════════════ */
-function renderStats() {
-  const icons = ['📚', '👥', '🏆'];
-  const labels = ['درس تعليمي', 'طالب مسجّل', 'إنجاز مكتمل'];
-  const vals = [DATA.stats.lessons, DATA.stats.users, DATA.stats.completions];
-  document.getElementById('statsRow').innerHTML = vals.map((v, i) =>
-    `<div class="stat-card">
-      <div class="stat-icon">${icons[i]}</div>
-      <div class="stat-num">${v}</div>
-      <div class="stat-label">${labels[i]}</div>
-    </div>`
-  ).join('');
+function nextQuestion() {
+  currentQ++;
+  if (currentQ < questions.length) renderQuestion();
 }
 
-/* ═══════════════ LATEST LESSONS ═══════════════ */
-function renderLatestLessons() {
-  const latest = allLessons.slice(0, 4);
-  document.getElementById('latestLessonsGrid').innerHTML = latest.map(l =>
-    `<div class="lesson-card" onclick="navigate('lesson','${l.slug}')">
-      <div class="lesson-thumb">
-        <img src="https://picsum.photos/seed/${l.slug}/600/338" alt="${l.title}" referrerpolicy="no-referrer" />
-        <div class="lesson-thumb-overlay">
-          <div class="play-btn-big">▶</div>
-        </div>
-      </div>
-      <div class="lesson-body">
-        <div class="lesson-series-tag">${l.seriesTitle}</div>
-        <div class="lesson-title">${l.title}</div>
-        <div class="lesson-footer">
-          <div class="lesson-meta">▶ ${l.mins} دقيقة</div>
-          <div class="arrow-btn">←</div>
-        </div>
-      </div>
-    </div>`
-  ).join('');
-}
-
-/* ═══════════════ COURSES ═══════════════ */
-function renderCoursesList() {
-  document.getElementById('coursesList').innerHTML = DATA.series.map(s =>
-    `<div class="course-card">
-      <div class="course-head">
-        <div class="course-icon">${s.icon}</div>
-        <div class="course-meta">
-          <h2>${s.title}</h2>
-          <p>${s.desc}</p>
-        </div>
-        <div class="course-badge">${s.lessons.length} دروس</div>
-      </div>
-      <div class="course-lessons">
-        ${s.lessons.map((l, i) =>
-          `<div class="course-lesson-item" onclick="navigate('lesson','${l.slug}')">
-            <div class="lesson-num">${String(i+1).padStart(2,'0')}</div>
-            <div class="course-lesson-title">${l.title}</div>
-            <div class="play-icon">▶</div>
-          </div>`
-        ).join('')}
-      </div>
-    </div>`
-  ).join('');
-}
-
-/* ═══════════════ LESSON ═══════════════ */
-function renderLesson(slug) {
-  const lesson = allLessons.find(l => l.slug === slug);
-  if (!lesson) return;
-
-  document.getElementById('breadcrumbSeries').textContent = lesson.seriesTitle;
-  document.getElementById('breadcrumbTitle').textContent = lesson.title;
-  document.getElementById('backBtn').onclick = () => navigate('courses');
-
-  const done = completedLessons.has(slug);
-  const cb = document.getElementById('completeBtn');
-  cb.className = 'complete-btn' + (done ? ' done' : '');
-  cb.innerHTML = done ? '✓ مكتمل' : '✓ وضع علامة مكتمل';
-
-  document.getElementById('lessonVideo').innerHTML =
-    `<img src="https://picsum.photos/seed/${slug}vid/1280/720" alt="${lesson.title}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;" />
-     <div class="video-play-overlay">
-       <div class="video-play-circle">▶</div>
-       <div class="video-label">// ${lesson.mins} min · مشاهدة الدرس</div>
-     </div>`;
-
-  switchTab('content', document.querySelector('.lesson-tab'));
-}
-
-function switchTab(tab, btn) {
-  currentTab = tab;
-  document.querySelectorAll('.lesson-tab').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-
-  const lesson = allLessons.find(l => l.slug === currentLessonSlug);
-  const el = document.getElementById('tabContent');
-
-  if (tab === 'content') {
-    el.innerHTML = `
-      <div class="lesson-text">
-        <h3>مقدمة الدرس</h3>
-        <p>في هذا الدرس سنتناول موضوع <strong>${lesson?.title || ''}</strong> بشكل معمّق، مع التركيز على الفهم النظري والتطبيق العملي باستخدام Python وPyTorch.</p>
-        <p>تُعدّ هذه المفاهيم أساسية لأي مهندس يريد العمل في مجال الذكاء الاصطناعي، وسنشرحها بأسلوب بسيط وتدريجي مع أمثلة تطبيقية.</p>
-        <h3>ما ستتعلمه في هذا الدرس</h3>
-        <ul>
-          <li>فهم المبادئ النظرية خطوة بخطوة</li>
-          <li>تطبيق المفاهيم باستخدام PyTorch أو TensorFlow</li>
-          <li>تصحيح الأخطاء الشائعة وأفضل الممارسات</li>
-          <li>تمارين ومهام تطبيقية للتعزيز</li>
-        </ul>
-        <h3>متطلبات الدرس</h3>
-        <p>يُفضَّل إتمام الدروس السابقة في نفس السلسلة، ومعرفة أساسية بلغة Python وعمليات المصفوفات.</p>
-      </div>`;
-  } else if (tab === 'code') {
-    el.innerHTML = `
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">python</span>
-          <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
-        </div>
-        <pre class="code-body"><span class="cm"># مثال تطبيقي — ${lesson?.title || ''}</span>
-<span class="kw">import</span> torch
-<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
-<span class="kw">import</span> torch.optim <span class="kw">as</span> optim
-
-<span class="cm"># تعريف النموذج</span>
-<span class="kw">class</span> <span class="fn">SimpleModel</span>(nn.Module):
-    <span class="kw">def</span> <span class="fn">__init__</span>(self):
-        <span class="kw">super</span>().<span class="fn">__init__</span>()
-        self.fc1 = nn.<span class="fn">Linear</span>(<span class="num">784</span>, <span class="num">256</span>)
-        self.fc2 = nn.<span class="fn">Linear</span>(<span class="num">256</span>, <span class="num">10</span>)
-        self.relu = nn.<span class="fn">ReLU</span>()
-        self.dropout = nn.<span class="fn">Dropout</span>(<span class="num">0.3</span>)
-
-    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
-        x = self.<span class="fn">relu</span>(self.<span class="fn">fc1</span>(x))
-        x = self.<span class="fn">dropout</span>(x)
-        <span class="kw">return</span> self.<span class="fn">fc2</span>(x)
-
-<span class="cm"># إنشاء النموذج والمحسّن</span>
-model = <span class="fn">SimpleModel</span>()
-optimizer = optim.<span class="fn">Adam</span>(model.<span class="fn">parameters</span>(), lr=<span class="num">1e-3</span>)
-criterion = nn.<span class="fn">CrossEntropyLoss</span>()
-
-<span class="cm"># حلقة التدريب</span>
-<span class="kw">for</span> epoch <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
-    model.<span class="fn">train</span>()
-    optimizer.<span class="fn">zero_grad</span>()
-    outputs = model(inputs)
-    loss = <span class="fn">criterion</span>(outputs, targets)
-    loss.<span class="fn">backward</span>()
-    optimizer.<span class="fn">step</span>()
-    <span class="fn">print</span>(<span class="str">f"Epoch {epoch+1}: Loss = {loss.item():.4f}"</span>)</pre>
-
-```
-  </div>`;
-```
-
-} else if (tab === ‘comments’) {
-el.innerHTML = ` <div class="comments-section"> <div class="comments-title"> التعليقات <span class="comment-count">3</span> </div> <div class="comment-form"> <input class="comment-input" id="commentInput" placeholder="اكتب تعليقاً أو سؤالاً..." /> <button class="send-btn" onclick="addComment()">إرسال</button> </div> <div id="commentsList"> ${renderComments([ { author: 'أحمد العتيبي', text: 'شرح ممتاز جداً، استفدت كثيراً من المثال العملي!', time: 'منذ يومين' }, { author: 'سارة الحربي', text: 'هل يمكن تطبيق نفس المفهوم مع TensorFlow بدلاً من PyTorch؟', time: 'منذ أسبوع' }, { author: 'محمد الزهراني', text: 'أفضل شرح وجدته باللغة العربية لهذا الموضوع، شكراً دكتور MAX!', time: 'منذ أسبوعين' }, ])} </div> </div>`;
-}
-}
-
-function renderComments(list) {
-return list.map(c => ` <div class="comment-item"> <div class="comment-avatar">${c.author[0]}</div> <div class="comment-body"> <div class="comment-author">${c.author}</div> <div class="comment-text">${c.text}</div> <div class="comment-time">${c.time}</div> </div> </div>`).join(’’);
-}
-
-function addComment() {
-const inp = document.getElementById(‘commentInput’);
-if (!inp || !inp.value.trim()) return;
-const list = document.getElementById(‘commentsList’);
-const div = document.createElement(‘div’);
-div.innerHTML = renderComments([{ author: ‘أنت’, text: inp.value, time: ‘الآن’ }]);
-list.prepend(div.firstElementChild);
-inp.value = ‘’;
-showToast(‘تم إضافة تعليقك ✓’);
-}
-
-function markComplete() {
-if (!currentLessonSlug) return;
-completedLessons.add(currentLessonSlug);
-const cb = document.getElementById(‘completeBtn’);
-cb.className = ‘complete-btn done’;
-cb.innerHTML = ‘✓ مكتمل’;
-renderSidebar(currentLessonSlug);
-showToast(‘تم تسجيل إنجازك! 🎉’);
-}
-
-/* ═══════════════ SIDEBAR ═══════════════ */
-function renderSidebar(activeSlug) {
-document.getElementById(‘sidebarContent’).innerHTML = DATA.series.map(s => {
-const isOpenSeries = s.lessons.some(l => l.slug === activeSlug);
-return `<div class="sidebar-section"> <button class="sidebar-series-btn" onclick="toggleSeries(this)"> <div class="sidebar-series-icon">${s.icon}</div> <span>${s.title}</span> </button> <div class="sidebar-lessons ${isOpenSeries ? 'open' : ''}"> ${s.lessons.map(l =>`<a class="sidebar-lesson-link ${l.slug === activeSlug ? 'active' : ''}" onclick="navigate('lesson','${l.slug}')">
-<span class="play-dot"></span>
-${l.title}
-</a>` ).join('')} </div> </div>`;
-}).join(’’);
-}
-
-function toggleSeries(btn) {
-const lessons = btn.nextElementSibling;
-lessons.classList.toggle(‘open’);
-}
-
-/* ═══════════════ SEARCH ═══════════════ */
-function handleSearch(q) {
-const dd = document.getElementById(‘searchDropdown’);
-if (!q || q.length < 2) { dd.classList.remove(‘visible’); return; }
-const results = allLessons.filter(l =>
-l.title.includes(q) || l.seriesTitle.includes(q)
-).slice(0, 6);
-if (!results.length) { dd.classList.remove(‘visible’); return; }
-dd.innerHTML = results.map(r =>
-`<div class="search-item" onclick="navigate('lesson','${r.slug}');document.getElementById('searchInput').value='';document.getElementById('searchDropdown').classList.remove('visible')"> <div class="search-item-title">${r.title}</div> <div class="search-item-type">${r.seriesTitle}</div> </div>`
-).join(’’);
-dd.classList.add(‘visible’);
-}
-
-document.addEventListener(‘click’, e => {
-if (!e.target.closest(’.header-search’))
-document.getElementById(‘searchDropdown’).classList.remove(‘visible’);
-});
-
-/* ═══════════════ COPY CODE ═══════════════ */
-function copyCode(btn) {
-const code = btn.closest(’.code-block’).querySelector(’.code-body’).textContent;
-navigator.clipboard.writeText(code).then(() => {
-btn.textContent = ‘تم النسخ ✓’;
-setTimeout(() => btn.textContent = ‘نسخ’, 2000);
-});
-}
-
-/* ═══════════════ TOAST ═══════════════ */
-function showToast(msg) {
-const t = document.getElementById(‘toast’);
-t.textContent = msg;
-t.classList.add(‘show’);
-setTimeout(() => t.classList.remove(‘show’), 3000);
-}
-
-/* ═══════════════ MOBILE ═══════════════ */
-function toggleSidebar() {
-const sb = document.getElementById(‘sidebar’);
-sidebarOpen = !sidebarOpen;
-sb.classList.toggle(‘open’, sidebarOpen);
-}
-function closeSidebar() {
-document.getElementById(‘sidebar’).classList.remove(‘open’);
-sidebarOpen = false;
-}
+renderQuestion();
 </script>
 
 </body>
