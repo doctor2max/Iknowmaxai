@@ -1,54 +1,86 @@
-import { Outlet } from "react-router-dom";
-import { Sidebar } from "./Sidebar";
-import { Menu } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { BookOpen, Home, User } from 'lucide-react';
+import { academyInfo } from '../data/sampleData';
 
-export function Layout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [settings, setSettings] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    fetch(`/api/settings?t=${Date.now()}`)
-      .then(res => res.json())
-      .then(data => setSettings(data))
-      .catch(err => console.error(err));
-  }, []);
-
-  const academyTitle = settings.academy_title || "أكاديمية الكود";
+export default function Layout() {
+  const location = useLocation();
 
   return (
-    <div className="flex h-screen bg-gray-50 text-gray-900 font-sans" dir="rtl">
-      {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">{academyInfo.name}</span>
+            </Link>
 
-      {/* Sidebar */}
-      <div className={`fixed inset-y-0 right-0 z-50 w-64 bg-white border-l border-gray-200 transform transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <Sidebar onClose={() => setSidebarOpen(false)} settings={settings} />
-      </div>
+            <nav className="flex items-center gap-6">
+              <Link
+                to="/"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                  location.pathname === '/'
+                    ? 'bg-emerald-50 text-emerald-600'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <Home className="w-5 h-5" />
+                <span>الرئيسية</span>
+              </Link>
+              <Link
+                to="/admin/login"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+              >
+                <User className="w-5 h-5" />
+                <span>لوحة التحكم</span>
+              </Link>
+            </nav>
+          </div>
+        </div>
+      </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Mobile Header */}
-        <header className="lg:hidden bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-indigo-600">{academyTitle}</h1>
-          <button 
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 -mr-2 text-gray-600 hover:text-gray-900"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-        </header>
+      <main>
+        <Outlet />
+      </main>
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto">
-          <Outlet context={{ settings }} />
-        </main>
-      </div>
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12 mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-xl font-bold">{academyInfo.name}</span>
+              </div>
+              <p className="text-gray-400">{academyInfo.tagline}</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-4">روابط سريعة</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link to="/" className="hover:text-white transition-colors">الرئيسية</Link></li>
+                <li><a href="#" className="hover:text-white transition-colors">من نحن</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">تواصل معنا</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-4">تواصل معنا</h3>
+              <p className="text-gray-400">{academyInfo.email}</p>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+            <p>© 2024 {academyInfo.name}. جميع الحقوق محفوظة</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
